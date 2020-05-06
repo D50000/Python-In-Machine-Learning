@@ -8,7 +8,7 @@ import talib
 
 ################### data preprocessing
 r1 = requests.get('http://api.binance.com/api/v3/time').json()
-period = 86400 * 180 * 1000  # ms
+period = 86400 * 360 * 1000  # ms
 startTime = r1['serverTime'] - period
 raw_Data = requests.get('https://api.binance.com/api/v1/klines?symbol=ETHUSDT&interval=1d&startTime=' + str(startTime)).json()
 # print(r2)
@@ -73,7 +73,7 @@ df['ADO'] = talib.ADOSC(df['High'], df['Low'], df['Close'], df['Volume'])  # I10
 # price.pct_change().head()
 df['price_mov'] = np.sign(price.pct_change().shift(-1))
 df=df.dropna()
-# print(df)
+print(df)
 
 
 ################### split data to train and test group
@@ -81,7 +81,7 @@ n_sample = df.shape[0]
 n_train = np.int(n_sample*0.5)
 train = df.iloc[:n_train,:]
 test = df.iloc[n_train:,:]
-# print(test)
+# print(train)
 
 # print(df.columns)
 train_X = train[['sma9', 'ema9', 'mom9', 'K_percent', 'D_percent', 'rsi6', 'macd', 'W_percent', 'cci', 'ADO']]
@@ -99,19 +99,287 @@ test_X_scale = scaler.transform(test_X)
 # print(test_X_scale[:3])
 
 
-################### build the model
+################### build the LogisticRegression model 
 from sklearn.linear_model import LogisticRegression
 clf = LogisticRegression()
-clf.fit(train_X_scale, train_Y)
+clf.fit(train_X_scale, train_Y.ravel())
 train_Y_predict = clf.predict(train_X_scale)
 test_Y_predict = clf.predict(test_X_scale)
-
-
-################### evaluate the model
+# evaluate the model
+# T/F accuracy
 from sklearn.metrics import confusion_matrix
 confusion_matrix(train_Y, train_Y_predict)
 # print(confusion_matrix(train_Y, train_Y_predict))
+print('-------------------- LogisticRegression model --------------------')
 p_true = pd.DataFrame(confusion_matrix(train_Y, train_Y_predict, labels=[-1, 1]), columns=['-1_predidct', '1_predidct'], index=['-1_true', '1_true'])
 print(p_true)
+print()
 p_true = pd.DataFrame(confusion_matrix(test_Y, test_Y_predict, labels=[-1, 1]), columns=['-1_predidct', '1_predidct'], index=['-1_true', '1_true'])
 print(p_true)
+print()
+# Precision Recall
+from sklearn.metrics import classification_report
+report = classification_report(np.array(train_Y), list(train_Y_predict), output_dict=True)
+print(pd.DataFrame(report))
+print()
+test_report = classification_report(np.array(test_Y), list(test_Y_predict), output_dict=True)
+print(pd.DataFrame(test_report))
+
+
+################### build the SVM model 
+from sklearn.svm import SVC
+clf = SVC(C=100, kernel='rbf', gamma=5)
+clf.fit(train_X_scale, train_Y.ravel())
+train_Y_predict = clf.predict(train_X_scale)
+test_Y_predict = clf.predict(test_X_scale)
+print('-------------------- SVM model --------------------')
+p_true = pd.DataFrame(confusion_matrix(train_Y, train_Y_predict, labels=[-1, 1]), columns=['-1_predidct', '1_predidct'], index=['-1_true', '1_true'])
+print(p_true)
+print()
+p_true = pd.DataFrame(confusion_matrix(test_Y, test_Y_predict, labels=[-1, 1]), columns=['-1_predidct', '1_predidct'], index=['-1_true', '1_true'])
+print(p_true)
+print()
+
+from sklearn.metrics import classification_report
+report = classification_report(np.array(train_Y), list(train_Y_predict), output_dict=True)
+print(pd.DataFrame(report))
+print()
+test_report = classification_report(np.array(test_Y), list(test_Y_predict), output_dict=True)
+print(pd.DataFrame(test_report))
+
+
+
+################### build the Random Forest model 
+from sklearn.ensemble import RandomForestClassifier
+clf = RandomForestClassifier(n_estimators=50)
+clf.fit(train_X_scale, train_Y.ravel())
+train_Y_predict = clf.predict(train_X_scale)
+test_Y_predict = clf.predict(test_X_scale)
+print('-------------------- Random Forest model --------------------')
+p_true = pd.DataFrame(confusion_matrix(train_Y, train_Y_predict, labels=[-1, 1]), columns=['-1_predidct', '1_predidct'], index=['-1_true', '1_true'])
+print(p_true)
+print()
+p_true = pd.DataFrame(confusion_matrix(test_Y, test_Y_predict, labels=[-1, 1]), columns=['-1_predidct', '1_predidct'], index=['-1_true', '1_true'])
+print(p_true)
+print()
+
+from sklearn.metrics import classification_report
+report = classification_report(np.array(train_Y), list(train_Y_predict), output_dict=True)
+print(pd.DataFrame(report))
+print()
+test_report = classification_report(np.array(test_Y), list(test_Y_predict), output_dict=True)
+print(pd.DataFrame(test_report))
+
+
+
+################### build the LDA model 
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+clf = LinearDiscriminantAnalysis()
+clf.fit(train_X_scale, train_Y.ravel())
+train_Y_predict = clf.predict(train_X_scale)
+test_Y_predict = clf.predict(test_X_scale)
+print('-------------------- LDA model --------------------')
+p_true = pd.DataFrame(confusion_matrix(train_Y, train_Y_predict, labels=[-1, 1]), columns=['-1_predidct', '1_predidct'], index=['-1_true', '1_true'])
+print(p_true)
+print()
+p_true = pd.DataFrame(confusion_matrix(test_Y, test_Y_predict, labels=[-1, 1]), columns=['-1_predidct', '1_predidct'], index=['-1_true', '1_true'])
+print(p_true)
+print()
+
+from sklearn.metrics import classification_report
+report = classification_report(np.array(train_Y), list(train_Y_predict), output_dict=True)
+print(pd.DataFrame(report))
+print()
+test_report = classification_report(np.array(test_Y), list(test_Y_predict), output_dict=True)
+print(pd.DataFrame(test_report))
+
+
+
+################### build the QDA model 
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+clf = QuadraticDiscriminantAnalysis()
+clf.fit(train_X_scale, train_Y.ravel())
+train_Y_predict = clf.predict(train_X_scale)
+test_Y_predict = clf.predict(test_X_scale)
+print('-------------------- QDA model --------------------')
+p_true = pd.DataFrame(confusion_matrix(train_Y, train_Y_predict, labels=[-1, 1]), columns=['-1_predidct', '1_predidct'], index=['-1_true', '1_true'])
+print(p_true)
+print()
+p_true = pd.DataFrame(confusion_matrix(test_Y, test_Y_predict, labels=[-1, 1]), columns=['-1_predidct', '1_predidct'], index=['-1_true', '1_true'])
+print(p_true)
+print()
+
+from sklearn.metrics import classification_report
+report = classification_report(np.array(train_Y), list(train_Y_predict), output_dict=True)
+print(pd.DataFrame(report))
+print()
+test_report = classification_report(np.array(test_Y), list(test_Y_predict), output_dict=True)
+print(pd.DataFrame(test_report))
+
+
+
+################### Merge all the model's results in the table
+# define the table function
+def get_ML_perf(clf, title='Logistic Regression'):
+    perf_df = pd.DataFrame(index=['train_Accuracy','train_F_mearsure', 'test_Accuracy','test_F_mearsure'])
+
+    clf.fit(train_X_scale, train_Y.ravel())
+    train_Y_predict = clf.predict(train_X_scale)
+    test_Y_predict = clf.predict(test_X_scale)
+    out=[]
+
+    ## train ##
+    report = classification_report(np.array(train_Y), list(train_Y_predict), output_dict=True)
+    out.append(report['macro avg']['precision'])
+    precision = report['weighted avg']['precision']
+    recall = report['weighted avg']['recall']
+    out.append(2*precision*recall/(precision+recall))
+    
+    ## test
+    report = classification_report(np.array(test_Y), list(test_Y_predict), output_dict=True)
+    out.append(report['macro avg']['precision'])
+    precision = report['weighted avg']['precision']
+    recall = report['weighted avg']['recall']
+    out.append(2*precision*recall/(precision+recall))
+
+    perf_df[title] = out
+    return(perf_df)
+
+# run all models
+print("---------------------------------------- all the model's results ----------------------------------------")
+perf_all = []
+## LG
+clf = LogisticRegression()
+perf_all.append(get_ML_perf(clf, title='Logistic Regression'))
+
+## SVM
+clf = SVC(C=50, kernel='rbf', gamma=1)
+perf_all.append(get_ML_perf(clf, title='SVM'))
+
+## Random Forest
+clf = RandomForestClassifier(n_estimators=5)
+perf_all.append(get_ML_perf(clf, title='Random Forest'))
+
+## LDA
+clf = LinearDiscriminantAnalysis()
+perf_all.append(get_ML_perf(clf, title='LDA'))
+
+## QDA
+clf = QuadraticDiscriminantAnalysis()
+perf_all.append(get_ML_perf(clf, title='QDA'))
+
+print(pd.concat(perf_all, axis=1))
+
+
+
+
+
+################### convert to trend prediction data
+df['sma9_sig'] = (df['Close']>=df['sma9']).astype(np.int)
+df['sma9_sig'].replace(0, -1, inplace=True)
+
+df['ema9_sig'] = (df['Close']>=df['ema9']).astype(np.int).replace(0, -1)
+
+df['mom9_sig'] = np.sign(df['mom9'])
+np.unique(df['mom9_sig'])
+# mom can't be 0
+# print(np.unique(df['mom9_sig']))
+
+df['K_percent_sig'] = np.sign(df['K_percent']-df['K_percent'].shift(1))
+df['D_percent_sig'] = np.sign(df['D_percent']-df['D_percent'].shift(1))
+df['W_percent_sig'] = np.sign(df['W_percent']-df['W_percent'].shift(1))
+# % can't be 0
+# df['W_percent_sig'].replace(0,np.nan,inplace=True)
+# print(np.unique(df['W_percent_sig']))
+
+df['ADO_sig'] = np.sign(df['ADO']-df['ADO'].shift(1))
+df['ADO_sig'].replace(0,np.nan,inplace=True)
+
+df['macd_sig'] = np.sign(df['macd']-df['macd'].shift(1))
+df['ADO_sig'].replace(0,np.nan,inplace=True)
+
+rsi_high = (df['rsi6']>70)*(-1)
+rsi_low = (df['rsi6']<30)*1
+rsi_mid_up = (df['rsi6']<=70) & (df['rsi6']>=30) & (df['rsi6']>df['rsi6'].shift(1))
+rsi_mid_down = (df['rsi6']<=70) & (df['rsi6']>=30) & (df['rsi6']<=df['rsi6'].shift(1))
+rsi_mid_down = rsi_mid_down*(-1)
+df['rsi6_sig'] = rsi_high + rsi_low + rsi_mid_up + rsi_mid_down
+df['rsi6_sig'].replace(0,np.nan,inplace=True)
+
+cci_high = (df['cci']>200)*(-1)
+cci_low = (df['cci']<-200)*1
+cci_mid_up = (df['cci']<=200) & (df['cci']>=-200) & (df['cci']>df['cci'].shift(1))
+cci_mid_down = (df['cci']<=200) & (df['cci']>=-200) & (df['cci']<=df['cci'].shift(1))
+cci_mid_down = cci_mid_down*(-1)
+df['cci_sig'] = cci_high + cci_low + cci_mid_up + cci_mid_down
+df['cci_sig'].replace(0,np.nan,inplace=True)
+
+df = df.dropna()
+print(df)
+
+######################## get the training and testing Trend data
+n_sample = df.shape[0]
+n_train = np.int(n_sample*0.5)
+train = df.iloc[:n_train,:]
+test = df.iloc[n_train:,:]
+
+ind_names = ['sma9','ema9','mom9', 'K_percent', 'D_percent', 'rsi6', 'macd', 'W_percent', 'cci', 'ADO']
+indTrend_names =[n+'_sig' for n in ind_names]
+
+train_X = train[indTrend_names]
+train_Y = np.array(train[['price_mov']])
+
+test_X = test[indTrend_names]
+test_Y = np.array(test[['price_mov']])
+
+################### Merge all the Trend data model's results in the table
+# define the table function
+def get_ML_perf(clf,title='Logistic Regression', train_X=train_X,train_Y=train_Y, test_X = test_X,test_Y=test_Y):
+    perf_df = pd.DataFrame(index=['train_Accuracy','train_F_mearsure', 'test_Accuracy','test_F_mearsure'])
+
+    clf.fit(train_X, train_Y.ravel())
+    train_Y_predict = clf.predict(train_X)
+    test_Y_predict = clf.predict(test_X)
+    out=[]
+    
+    ## train ##
+    report = classification_report(np.array(train_Y), list(train_Y_predict), output_dict=True)
+    out.append(report['macro avg']['precision'])
+    precision = report['weighted avg']['precision']
+    recall = report['weighted avg']['recall']
+    out.append(2*precision*recall/(precision+recall))
+    
+    ## test
+    report = classification_report(np.array(test_Y), list(test_Y_predict), output_dict=True)
+    out.append(report['macro avg']['precision'])
+    precision = report['weighted avg']['precision']
+    recall = report['weighted avg']['recall']
+    out.append(2*precision*recall/(precision+recall))
+    
+    perf_df[title] = out
+    return(perf_df)
+
+# run all models
+print("---------------------------------------- all the model's results in Trend data ----------------------------------------")
+perf_all = []
+## LG
+clf = LogisticRegression()
+perf_all.append(get_ML_perf(clf, title='Logistic Regression'))
+
+## SVM
+clf = SVC(C=50, kernel='rbf', gamma=1)
+perf_all.append(get_ML_perf(clf, title='SVM'))
+
+## Random Forest
+clf = RandomForestClassifier(n_estimators=5)
+perf_all.append(get_ML_perf(clf, title='Random Forest'))
+
+## LDA
+clf = LinearDiscriminantAnalysis()
+perf_all.append(get_ML_perf(clf, title='LDA'))
+
+## QDA
+clf = QuadraticDiscriminantAnalysis()
+perf_all.append(get_ML_perf(clf, title='QDA'))
+
+print(pd.concat(perf_all, axis=1))
