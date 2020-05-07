@@ -105,6 +105,8 @@ clf = LogisticRegression()
 clf.fit(train_X_scale, train_Y.ravel())
 train_Y_predict = clf.predict(train_X_scale)
 test_Y_predict = clf.predict(test_X_scale)
+print(train_Y_predict)
+print(test_Y_predict)
 # evaluate the model
 # T/F accuracy
 from sklearn.metrics import confusion_matrix
@@ -124,6 +126,35 @@ print(pd.DataFrame(report))
 print()
 test_report = classification_report(np.array(test_Y), list(test_Y_predict), output_dict=True)
 print(pd.DataFrame(test_report))
+
+
+################### build the LinearRegression model 
+# from sklearn.linear_model import LinearRegression
+# clf = LinearRegression()
+# clf.fit(train_X_scale, train_Y.ravel())
+# train_Y_predict = clf.predict(train_X_scale)
+# test_Y_predict = clf.predict(test_X_scale)
+# print(train_Y_predict)
+# print(test_Y_predict)
+# # evaluate the model
+# # T/F accuracy
+# from sklearn.metrics import confusion_matrix
+# confusion_matrix(train_Y, train_Y_predict)
+# # print(confusion_matrix(train_Y, train_Y_predict))
+# print('-------------------- LinearRegression model --------------------')
+# p_true = pd.DataFrame(confusion_matrix(train_Y, train_Y_predict, labels=[-1, 1]), columns=['-1_predidct', '1_predidct'], index=['-1_true', '1_true'])
+# print(p_true)
+# print()
+# p_true = pd.DataFrame(confusion_matrix(test_Y, test_Y_predict, labels=[-1, 1]), columns=['-1_predidct', '1_predidct'], index=['-1_true', '1_true'])
+# print(p_true)
+# print()
+# # Precision Recall
+# from sklearn.metrics import classification_report
+# report = classification_report(np.array(train_Y), list(train_Y_predict), output_dict=True)
+# print(pd.DataFrame(report))
+# print()
+# test_report = classification_report(np.array(test_Y), list(test_Y_predict), output_dict=True)
+# print(pd.DataFrame(test_report))
 
 
 ################### build the SVM model 
