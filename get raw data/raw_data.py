@@ -10,7 +10,7 @@ import talib
 r1 = requests.get('http://api.binance.com/api/v3/time').json()
 period = 86400 * 360 * 1000  # ms
 startTime = r1['serverTime'] - period
-raw_Data = requests.get('https://api.binance.com/api/v1/klines?symbol=ETHUSDT&interval=1d&startTime=' + str(startTime)).json()
+raw_Data = requests.get('https://api.binance.com/api/v1/klines?symbol=ETHUSDT&interval=1d').json()
 # print(r2)
 
 #   [
@@ -59,11 +59,11 @@ df = pd.DataFrame(data=df_numpy)
 df.index = pd.to_datetime(df.date.astype(np.str))
 
 price = df['Close']
-df['sma9'] = talib.SMA(price, 9)  # I1
-df['ema9'] = talib.EMA(price, 9)  # I2
-df['mom9'] = talib.MOM(price, 9)  # I3
+df['sma34'] = talib.SMA(price, 34)  # I1
+df['ema34'] = talib.EMA(price, 34)  # I2
+df['mom34'] = talib.MOM(price, 34)  # I3
 df['K_percent'], df['D_percent'] = talib.STOCHF(df['High'], df['Low'], df['Close'])  # I4 I5
-df['rsi6'] = talib.RSI(price, 6)  # I6
+df['rsi34'] = talib.RSI(price, 34)  # I6
 df['macd'], dif, dem = talib.MACD(price)  # I7
 df['W_percent'] = talib.WILLR(df['High'], df['Low'], df['Close'])  # I8
 df['cci'] = talib.CCI(df['High'], df['Low'], df['Close'])  # I9
@@ -84,10 +84,10 @@ test = df.iloc[n_train:,:]
 # print(train)
 
 # print(df.columns)
-train_X = train[['sma9', 'ema9', 'mom9', 'K_percent', 'D_percent', 'rsi6', 'macd', 'W_percent', 'cci', 'ADO']]
+train_X = train[['sma34', 'ema34', 'mom34', 'K_percent', 'D_percent', 'rsi34', 'macd', 'W_percent', 'cci', 'ADO']]
 train_Y = np.array(train[['price_mov']])
 
-test_X = train[['sma9', 'ema9', 'mom9', 'K_percent', 'D_percent', 'rsi6', 'macd', 'W_percent', 'cci', 'ADO']]
+test_X = test[['sma34', 'ema34', 'mom34', 'K_percent', 'D_percent', 'rsi34', 'macd', 'W_percent', 'cci', 'ADO']]
 test_Y = np.array(test[['price_mov']])
 
 
@@ -105,8 +105,8 @@ clf = LogisticRegression()
 clf.fit(train_X_scale, train_Y.ravel())
 train_Y_predict = clf.predict(train_X_scale)
 test_Y_predict = clf.predict(test_X_scale)
-print(train_Y_predict)
-print(test_Y_predict)
+# print(train_Y_predict)
+# print(test_Y_predict)
 # evaluate the model
 # T/F accuracy
 from sklearn.metrics import confusion_matrix
@@ -306,13 +306,13 @@ print(pd.concat(perf_all, axis=1))
 
 
 ################### convert to trend prediction data
-df['sma9_sig'] = (df['Close']>=df['sma9']).astype(np.int)
-df['sma9_sig'].replace(0, -1, inplace=True)
+df['sma34_sig'] = (df['Close']>=df['sma34']).astype(np.int)
+df['sma34_sig'].replace(0, -1, inplace=True)
 
-df['ema9_sig'] = (df['Close']>=df['ema9']).astype(np.int).replace(0, -1)
+df['ema34_sig'] = (df['Close']>=df['ema34']).astype(np.int).replace(0, -1)
 
-df['mom9_sig'] = np.sign(df['mom9'])
-np.unique(df['mom9_sig'])
+df['mom34_sig'] = np.sign(df['mom34'])
+np.unique(df['mom34_sig'])
 # mom can't be 0
 # print(np.unique(df['mom9_sig']))
 
@@ -329,13 +329,13 @@ df['ADO_sig'].replace(0,np.nan,inplace=True)
 df['macd_sig'] = np.sign(df['macd']-df['macd'].shift(1))
 df['ADO_sig'].replace(0,np.nan,inplace=True)
 
-rsi_high = (df['rsi6']>70)*(-1)
-rsi_low = (df['rsi6']<30)*1
-rsi_mid_up = (df['rsi6']<=70) & (df['rsi6']>=30) & (df['rsi6']>df['rsi6'].shift(1))
-rsi_mid_down = (df['rsi6']<=70) & (df['rsi6']>=30) & (df['rsi6']<=df['rsi6'].shift(1))
+rsi_high = (df['rsi34']>70)*(-1)
+rsi_low = (df['rsi34']<30)*1
+rsi_mid_up = (df['rsi34']<=70) & (df['rsi34']>=30) & (df['rsi34']>df['rsi34'].shift(1))
+rsi_mid_down = (df['rsi34']<=70) & (df['rsi34']>=30) & (df['rsi34']<=df['rsi34'].shift(1))
 rsi_mid_down = rsi_mid_down*(-1)
-df['rsi6_sig'] = rsi_high + rsi_low + rsi_mid_up + rsi_mid_down
-df['rsi6_sig'].replace(0,np.nan,inplace=True)
+df['rsi34_sig'] = rsi_high + rsi_low + rsi_mid_up + rsi_mid_down
+df['rsi34_sig'].replace(0,np.nan,inplace=True)
 
 cci_high = (df['cci']>200)*(-1)
 cci_low = (df['cci']<-200)*1
@@ -354,7 +354,7 @@ n_train = np.int(n_sample*0.5)
 train = df.iloc[:n_train,:]
 test = df.iloc[n_train:,:]
 
-ind_names = ['sma9','ema9','mom9', 'K_percent', 'D_percent', 'rsi6', 'macd', 'W_percent', 'cci', 'ADO']
+ind_names = ['sma34','ema34','mom34', 'K_percent', 'D_percent', 'rsi34', 'macd', 'W_percent', 'cci', 'ADO']
 indTrend_names =[n+'_sig' for n in ind_names]
 
 train_X = train[indTrend_names]
