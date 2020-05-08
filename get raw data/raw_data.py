@@ -10,7 +10,8 @@ import talib
 r1 = requests.get('http://api.binance.com/api/v3/time').json()
 period = 86400 * 360 * 1000  # ms
 startTime = r1['serverTime'] - period
-raw_Data = requests.get('https://api.binance.com/api/v1/klines?symbol=ETHUSDT&interval=1d').json()
+raw_Data = requests.get('https://api.binance.com/api/v1/klines?symbol=ETHUSDT&interval=6h').json()
+# note: 6h and 1d is the best predict rate.
 # print(r2)
 
 #   [
@@ -425,3 +426,21 @@ clf = QuadraticDiscriminantAnalysis()
 perf_all.append(get_ML_perf(clf, title='QDA'))
 
 print(pd.concat(perf_all, axis=1))
+
+
+######################## Predicting
+ind_names = ['sma34', 'ema34','wma34','ADXR3', 'mom34', 'K_percent', 'D_percent', 'rsi34', 'macd', 'W_percent', 'cci', 'ADO']
+indTrend_names =[n+'_sig' for n in ind_names]
+
+test_X = test[indTrend_names]
+test_Y = np.array(test[['price_mov']])
+print(test_X.tail())
+clf = LogisticRegression()
+clf.fit(test_X, test_Y.ravel())
+sixHourLater_Y_predict = clf.predict(test_X)
+print(sixHourLater_Y_predict)
+
+clf = LinearDiscriminantAnalysis()
+clf.fit(test_X, test_Y.ravel())
+sixHourLater_Y_predict = clf.predict(test_X)
+print(sixHourLater_Y_predict)
