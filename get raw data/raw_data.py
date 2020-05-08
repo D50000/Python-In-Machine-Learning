@@ -59,11 +59,14 @@ df = pd.DataFrame(data=df_numpy)
 df.index = pd.to_datetime(df.date.astype(np.str))
 
 price = df['Close']
-df['sma34'] = talib.SMA(price, 34)  # I1
-df['ema34'] = talib.EMA(price, 34)  # I2
-df['mom34'] = talib.MOM(price, 34)  # I3
+df['sma34'] = talib.SMA(price, 7)  # I1
+# df['sma200'] = talib.SMA(price, 200)
+df['ema34'] = talib.EMA(price, 7)  # I2
+df['wma34'] = talib.WMA(price, 7)
+df['ADXR3'] = talib.ADXR(df['High'], df['Low'], df['Close'], timeperiod=3)
+df['mom34'] = talib.MOM(price, 10)  # I3
 df['K_percent'], df['D_percent'] = talib.STOCHF(df['High'], df['Low'], df['Close'])  # I4 I5
-df['rsi34'] = talib.RSI(price, 34)  # I6
+df['rsi34'] = talib.RSI(price, 10)  # I6
 df['macd'], dif, dem = talib.MACD(price)  # I7
 df['W_percent'] = talib.WILLR(df['High'], df['Low'], df['Close'])  # I8
 df['cci'] = talib.CCI(df['High'], df['Low'], df['Close'])  # I9
@@ -84,10 +87,10 @@ test = df.iloc[n_train:,:]
 # print(train)
 
 # print(df.columns)
-train_X = train[['sma34', 'ema34', 'mom34', 'K_percent', 'D_percent', 'rsi34', 'macd', 'W_percent', 'cci', 'ADO']]
+train_X = train[['sma34', 'ema34', 'wma34','ADXR3', 'mom34', 'K_percent', 'D_percent', 'rsi34', 'macd', 'W_percent', 'cci', 'ADO']]
 train_Y = np.array(train[['price_mov']])
 
-test_X = test[['sma34', 'ema34', 'mom34', 'K_percent', 'D_percent', 'rsi34', 'macd', 'W_percent', 'cci', 'ADO']]
+test_X = test[['sma34', 'ema34', 'wma34','ADXR3', 'mom34', 'K_percent', 'D_percent', 'rsi34', 'macd', 'W_percent', 'cci', 'ADO']]
 test_Y = np.array(test[['price_mov']])
 
 
@@ -309,7 +312,15 @@ print(pd.concat(perf_all, axis=1))
 df['sma34_sig'] = (df['Close']>=df['sma34']).astype(np.int)
 df['sma34_sig'].replace(0, -1, inplace=True)
 
+# df['sma200_sig'] = (df['Close']>=df['sma200']).astype(np.int)
+# df['sma200_sig'].replace(0, -1, inplace=True)
+
 df['ema34_sig'] = (df['Close']>=df['ema34']).astype(np.int).replace(0, -1)
+
+df['wma34_sig'] = (df['Close']>=df['wma34']).astype(np.int).replace(0, -1)
+
+df['ADXR3_sig'] = np.sign(df['ADXR3'])
+np.unique(df['ADXR3_sig'])
 
 df['mom34_sig'] = np.sign(df['mom34'])
 np.unique(df['mom34_sig'])
@@ -354,7 +365,7 @@ n_train = np.int(n_sample*0.5)
 train = df.iloc[:n_train,:]
 test = df.iloc[n_train:,:]
 
-ind_names = ['sma34','ema34','mom34', 'K_percent', 'D_percent', 'rsi34', 'macd', 'W_percent', 'cci', 'ADO']
+ind_names = ['sma34', 'ema34','wma34','ADXR3', 'mom34', 'K_percent', 'D_percent', 'rsi34', 'macd', 'W_percent', 'cci', 'ADO']
 indTrend_names =[n+'_sig' for n in ind_names]
 
 train_X = train[indTrend_names]
