@@ -10,7 +10,8 @@ import talib
 r1 = requests.get('http://api.binance.com/api/v3/time').json()
 period = 86400 * 360 * 1000  # ms
 startTime = r1['serverTime'] - period
-raw_Data = requests.get('https://api.binance.com/api/v1/klines?symbol=ETHUSDT&interval=6h').json()
+interval = '6h'
+raw_Data = requests.get('https://api.binance.com/api/v1/klines?symbol=ETHUSDT&interval=' + interval).json()
 # note: 6h and 1d is the best predict rate.
 # print(r2)
 
@@ -36,10 +37,13 @@ High_Array = []
 Low_Array = []
 Close_Array = []
 Volume_Array = []
-for c in raw_Data:
+latest_data = None
+for i, c in enumerate(raw_Data):
     start = str(c[0])
     newTime = int(start[0:10])
     date = datetime.datetime.fromtimestamp(newTime).isoformat()
+    if i == len(raw_Data)-1:
+        latest_data = date
     date_Array.append(date)
     Open_Array.append(float(c[1]))
     High_Array.append(float(c[2]))
@@ -435,12 +439,19 @@ indTrend_names =[n+'_sig' for n in ind_names]
 test_X = test[indTrend_names]
 test_Y = np.array(test[['price_mov']])
 print(test_X.tail())
+print('↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ Predict start ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓')
+start = str(r1['serverTime'])
+newTime = int(start[0:10])
+print('Now ServerTime :' + datetime.datetime.fromtimestamp(newTime).isoformat()) # server time
+print(latest_data + ' next ' + interval)
+
 clf = LogisticRegression()
 clf.fit(test_X, test_Y.ravel())
 sixHourLater_Y_predict = clf.predict(test_X)
-print(sixHourLater_Y_predict)
+print('LogisticRegression: ' + str(sixHourLater_Y_predict[-1]))
 
 clf = LinearDiscriminantAnalysis()
 clf.fit(test_X, test_Y.ravel())
 sixHourLater_Y_predict = clf.predict(test_X)
-print(sixHourLater_Y_predict)
+print('LinearDiscriminantAnalysis: ' + str(sixHourLater_Y_predict[-1]))
+print('################# Predict end #################')
