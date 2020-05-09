@@ -12,25 +12,29 @@ https://www.sciencedirect.com/science/article/abs/pii/S0957417414004473
 - naive-Bayes algorithms
 
 ## Technical Indicators
-- SMA
-Simple Moving Average (10-days)
-- EMA
-Exponential Moving Average (10-days)
-- MOM
+- SMA:  
+Simple Moving Average  
+- EMA:  
+Exponential Moving Average
+- WMA:  
+Weighted Moving Average
+- ADXR:  
+Average Directional Movement Index Rating
+- MOM:  
 Momentum
-- STCK
+- STCK:  
 Stochastic K%
-- STCD
+- STCD:  
 Stochastic D%
-- MACD
+- MACD:  
 Moving Average Convergence and Divergence
-- RSI
+- RSI:  
 Relative Strength Index
-- WR
+- WR:  
 Larry William's R%
-- ADO
+- ADO:  
  Accumulation Distribution Oscillator
- - CCI
+ - CCI:  
  Commodity Channel Index
 
  ## Get the RAW data
