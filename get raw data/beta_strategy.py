@@ -1,3 +1,11 @@
+# ============================================================
+# node-binance-api
+# https://binance-docs.github.io/apidocs/spot/en/#market-data-endpoints
+# ============================================================
+# Copyright 2020, Eddie Hsu (D50000)
+# Released MySelf
+# ============================================================
+
 import requests
 import datetime
 
@@ -43,6 +51,8 @@ for i, c in enumerate(raw_Data):
     newTime = int(start[0:10])
     date = datetime.datetime.fromtimestamp(newTime).isoformat()
     if i == len(raw_Data)-1:
+        print(date)
+        print(c)
         latest_data = date
     date_Array.append(date)
     Open_Array.append(float(c[1]))
