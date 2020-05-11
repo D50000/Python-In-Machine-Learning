@@ -22,6 +22,7 @@ https://www.sciencedirect.com/science/article/abs/pii/S0957417414004473
 
 
 ### Technical Indicators
+If can't install **ta-lib** check this ![here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib)
 - **SMA**:  
 Simple Moving Average  
 - **EMA**:  
