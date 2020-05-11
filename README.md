@@ -2,9 +2,6 @@
 - AI, Machine Learning, Deep Learning:  
 https://ithelp.ithome.com.tw/articles/10201674
 
-## Predict Stock by ML
-- Prove the **Technical Indicators** is more value than the **continuous-valued data** for the ML input.  
-https://www.sciencedirect.com/science/article/abs/pii/S0957417414004473
 
 ## Analysis Models
 - ANN  
@@ -18,31 +15,37 @@ https://medium.com/jameslearningnote/%E8%B3%87%E6%96%99%E5%88%86%E6%9E%90-%E6%A9
 - naive-Bayes algorithms  
 https://en.wikipedia.org/wiki/Naive_Bayes_classifier
 
-## Technical Indicators
-- SMA:  
+
+## # Python In Machine Learning Apply to FinTech
+- Prove the **Technical Indicators** is more value than the **continuous-valued data** for the ML input.  
+https://www.sciencedirect.com/science/article/abs/pii/S0957417414004473
+
+
+### Technical Indicators
+- **SMA**:  
 Simple Moving Average  
-- EMA:  
+- **EMA**:  
 Exponential Moving Average
-- WMA:  
+- **WMA**:  
 Weighted Moving Average
-- ADXR:  
+- **ADXR**:  
 Average Directional Movement Index Rating
-- MOM:  
+- **MOM**:  
 Momentum
-- STCK:  
+- **STCK**:  
 Stochastic K%
-- STCD:  
+- **STCD**:  
 Stochastic D%
-- MACD:  
+- **MACD**:  
 Moving Average Convergence and Divergence
-- RSI:  
+- **RSI**:  
 Relative Strength Index
-- WR:  
+- **WR**:  
 Larry William's R%
-- ADO:  
+- **ADO**:  
  Accumulation Distribution Oscillator
- - CCI:  
+ - **CCI**:  
  Commodity Channel Index
 
- ## Get the RAW data
+ ### Get the RAW data
  
