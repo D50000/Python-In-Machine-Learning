@@ -10,7 +10,9 @@ import requests
 import datetime
 
 import pandas as pd
+print(pd.__version__)
 import numpy as np
+print (np.version.version)
 import talib
 
 
@@ -78,14 +80,14 @@ df['sma34'] = talib.SMA(price.values, 7)  # I1
 # df['sma200'] = talib.SMA(price, 200)
 df['ema34'] = talib.EMA(price.values, 7)  # I2
 df['wma34'] = talib.WMA(price.values, 7)
-df['ADXR3'] = talib.ADXR(df['High'], df['Low'], df['Close'], timeperiod=3)
+df['ADXR3'] = talib.ADXR(df['High'].values, df['Low'].values, df['Close'].values, timeperiod=3)
 df['mom34'] = talib.MOM(price.values, 10)  # I3
-df['K_percent'], df['D_percent'] = talib.STOCHF(df['High'], df['Low'], df['Close'])  # I4 I5
+df['K_percent'], df['D_percent'] = talib.STOCHF(df['High'].values, df['Low'].values, df['Close'].values)  # I4 I5
 df['rsi34'] = talib.RSI(price.values, 10)  # I6
 df['macd'], dif, dem = talib.MACD(price.values)  # I7
-df['W_percent'] = talib.WILLR(df['High'], df['Low'], df['Close'])  # I8
-df['cci'] = talib.CCI(df['High'], df['Low'], df['Close'])  # I9
-df['ADO'] = talib.ADOSC(df['High'], df['Low'], df['Close'], df['Volume'])  # I10
+df['W_percent'] = talib.WILLR(df['High'].values, df['Low'].values, df['Close'].values)  # I8
+df['cci'] = talib.CCI(df['High'].values, df['Low'].values, df['Close'].values)  # I9
+df['ADO'] = talib.ADOSC(df['High'].values, df['Low'].values, df['Close'].values, df['Volume'].values)  # I10
 # print(ADO)
 
 # price.pct_change().head()
