@@ -3,7 +3,7 @@
 https://ithelp.ithome.com.tw/articles/10201674
 
 
-## Analysis Models
+## Machine Learning Models
 - ANN  
 ![](https://github.com/D50000/Python-In-Machine-Learning/blob/master/images/FODQsVm.gif)
 - SVM  
@@ -16,7 +16,7 @@ https://medium.com/jameslearningnote/%E8%B3%87%E6%96%99%E5%88%86%E6%9E%90-%E6%A9
 https://en.wikipedia.org/wiki/Naive_Bayes_classifier
 
 
-## # Python In Machine Learning Apply to FinTech
+## Python In Machine Learning Apply to FinTech
 - Prove the **Technical Indicators** is more value than the **continuous-valued data** for the ML input.  
 https://www.sciencedirect.com/science/article/abs/pii/S0957417414004473
 
@@ -48,5 +48,8 @@ Larry William's R%
  - **CCI**:  
  Commodity Channel Index
 
- ### Get the RAW data
+### Model selection
+- Beta strategy
+- Linear strategy
+LinearRegression model
  
