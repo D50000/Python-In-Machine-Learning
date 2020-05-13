@@ -51,7 +51,7 @@ Larry William's R%
 ### Model selection
 - Beta strategy  
 - Linear strategy  
-![](https://github.com/D50000/Python-In-Machine-Learning/blob/master/images/Loss functions.PNG)
+![](https://github.com/D50000/Python-In-Machine-Learning/blob/master/images/Loss_functions.PNG)
     - Linear Regression model
     - Mean squared error
     - R-squared
