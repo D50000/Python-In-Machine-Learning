@@ -49,7 +49,14 @@ Larry William's R%
  Commodity Channel Index
 
 ### Model selection
-- Beta strategy
-- Linear strategy
-LinearRegression model
- 
+- Beta strategy  
+- Linear strategy  
+![](https://github.com/D50000/Python-In-Machine-Learning/blob/master/images/Loss functions.PNG)
+    - Linear Regression model
+    - Mean squared error
+    - R-squared
+    - Adjusted R-squaredp-value
+
+#### reference:  
+[https://heartbeat.fritz.ai/5-regression-loss-functions-all-machine-learners-should-know-4fb140e9d4b0](https://heartbeat.fritz.ai/5-regression-loss-functions-all-machine-learners-should-know-4fb140e9d4b0)
+[https://www.geeksforgeeks.org/ml-implementing-l1-and-l2-regularization-using-sklearn/](https://www.geeksforgeeks.org/ml-implementing-l1-and-l2-regularization-using-sklearn/)
