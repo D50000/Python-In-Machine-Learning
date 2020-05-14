@@ -49,9 +49,9 @@ Larry William's R%
  Commodity Channel Index
 
 ### Model selection
-- Beta strategy  
-- Linear strategy  
 ![](https://github.com/D50000/Python-In-Machine-Learning/blob/master/images/Loss_functions.PNG)
+- Classification strategy  
+- Regression strategy  
     - Linear Regression model
     - Mean squared error
     - R-squared

@@ -117,7 +117,7 @@ clf = LinearRegression()
 clf.fit(train_X, train_Y.ravel())
 print('intercept:',clf.intercept_)
 print('coefficient:',clf.coef_)
-# print(clf.predict(test_X))
+print(clf.predict(test_X))
 # Evaluate the model
 mse = np.mean((clf.predict(train_X) - train_Y) ** 2)
 r_squared = clf.score(train_X, train_Y)

@@ -445,6 +445,7 @@ print(pd.concat(perf_all, axis=1))
 
 
 ######################## Predicting
+from sklearn.feature_selection import f_regression
 ind_names = ['sma34', 'ema34','wma34','ADXR3', 'mom34', 'K_percent', 'D_percent', 'rsi34', 'macd', 'W_percent', 'cci', 'ADO']
 indTrend_names =[n+'_sig' for n in ind_names]
 
@@ -460,6 +461,8 @@ print(latest_data + ' next ' + interval)
 clf = LogisticRegression()
 clf.fit(test_X, test_Y.ravel())
 sixHourLater_Y_predict = clf.predict(test_X)
+print(sixHourLater_Y_predict)
+# print(f_regression(test_X, test_Y.ravel())[1])
 print('LogisticRegression: ' + str(sixHourLater_Y_predict[-1]))
 
 clf = LinearDiscriminantAnalysis()
@@ -467,3 +470,7 @@ clf.fit(test_X, test_Y.ravel())
 sixHourLater_Y_predict = clf.predict(test_X)
 print('LinearDiscriminantAnalysis: ' + str(sixHourLater_Y_predict[-1]))
 print('################# Predict end #################')
+
+
+# Regression testing PNL
+print('################# Predict PNL #################')
