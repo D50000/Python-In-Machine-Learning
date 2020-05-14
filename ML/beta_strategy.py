@@ -381,6 +381,7 @@ n_sample = df.shape[0]
 n_train = np.int(n_sample*0.5)
 train = df.iloc[:n_train,:]
 test = df.iloc[n_train:,:]
+PNL_test = test
 
 ind_names = ['sma34', 'ema34','wma34','ADXR3', 'mom34', 'K_percent', 'D_percent', 'rsi34', 'macd', 'W_percent', 'cci', 'ADO']
 indTrend_names =[n+'_sig' for n in ind_names]
@@ -462,6 +463,7 @@ clf = LogisticRegression()
 clf.fit(test_X, test_Y.ravel())
 sixHourLater_Y_predict = clf.predict(test_X)
 print(sixHourLater_Y_predict)
+LS_test = sixHourLater_Y_predict
 # print(f_regression(test_X, test_Y.ravel())[1])
 print('LogisticRegression: ' + str(sixHourLater_Y_predict[-1]))
 
@@ -474,3 +476,34 @@ print('################# Predict end #################')
 
 # Regression testing PNL
 print('################# Predict PNL #################')
+print(PNL_test)
+PNL_test.index = range(233)
+sum_PLN = 0
+PLN = 0
+sum_fee = 0
+fee = 0
+fee_Coefficient = 0.04 * 0.01
+action = None
+buy = None
+sell = None
+for index, row in PNL_test.iterrows():
+    if index == 0:
+        continue
+    if LS_test[index - 1] == 1:
+        PLN = row['Close'] - row['Open']
+        fee = (row['Open'] + row['Close']) * fee_Coefficient
+        print(row['date'] + ": " + str(PLN))
+        print(fee)
+    else:
+        PLN = row['Open'] - row['Close']
+        fee = (row['Open'] + row['Close']) * fee_Coefficient
+        print(row['date'] + ": " + str(PLN))
+        print(fee)
+    sum_PLN += PLN
+    sum_fee += fee
+PLN = sum_PLN - sum_fee
+
+# print(sum_PLN)
+# print(sum_fee)
+result = 'PLN = %f - %f = %f' %(sum_PLN, sum_fee, PLN)
+print(result)
