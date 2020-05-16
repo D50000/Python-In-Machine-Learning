@@ -20,7 +20,7 @@ import talib
 r1 = requests.get('http://api.binance.com/api/v3/time').json()
 period = 86400 * 360 * 1000  # ms
 startTime = r1['serverTime'] - period
-interval = '6h'
+interval = '12h'
 raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&interval=' + interval).json()
 # note: 6h and 1d is the best predict rate.
 # print(r2)
@@ -477,7 +477,7 @@ print('################# Predict end #################')
 # Regression testing PNL
 print('################# Predict PNL #################')
 print(PNL_test)
-PNL_test.index = range(233)
+PNL_test.index = range(154)
 sum_PLN = 0
 PLN = 0
 sum_fee = 0
