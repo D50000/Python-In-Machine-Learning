@@ -477,34 +477,53 @@ print('################# Predict end #################')
 # Regression testing PNL
 print('################# Predict PNL #################')
 print(PNL_test)
-# PNL_test.index = range(154)  # 12h
+# PNL_test.index = range(155)  # 12h
 PNL_test.index = range(233)
-sum_PLN = 0
-PLN = 0
+sum_PNL = 0
+PNL = 0
 sum_fee = 0
 fee = 0
 fee_Coefficient = 0.04 * 0.01
 action = None
-buy = None
-sell = None
+OOO = None
+CCC = None
 for index, row in PNL_test.iterrows():
     if index == 0:
         continue
     if LS_test[index - 1] == 1:
-        PLN = row['Close'] - row['Open']
-        fee = (row['Open'] + row['Close']) * fee_Coefficient
-        # print(row['date'] + ": " + str(PLN))
-        # print(fee)
+        if action == None:
+            fee = row['Open'] * fee_Coefficient
+            action = 1
+            OOO = row['Open']
+        if action == 1:
+            continue
+        if action == -1:
+            fee = row['Open'] * fee_Coefficient
+            PNL = OOO - row['Open']
+            # print('%f - %f' %(row['Open'], OOO))
+            fee += row['Open'] * fee_Coefficient
+            action = 1
+            OOO = row['Open']
     else:
-        PLN = row['Open'] - row['Close']
-        fee = (row['Open'] + row['Close']) * fee_Coefficient
-        # print(row['date'] + ": " + str(PLN))
-        # print(fee)
-    sum_PLN += PLN
-    sum_fee += fee
-PLN = sum_PLN - sum_fee
+        if action == None:
+            fee = row['Open'] * fee_Coefficient
+            action = -1
+            OOO = row['Open']
+        if action == -1:
+            continue
+        if action == 1:
+            fee = row['Open'] * fee_Coefficient
+            PNL = row['Open'] - OOO
+            # print('%f - %f' %(row['Open'], OOO))
+            fee += row['Open'] * fee_Coefficient
+            action = -1
+            OOO = row['Open']
 
-# print(sum_PLN)
-# print(sum_fee)
-result = 'PLN = %f - %f = %f' %(sum_PLN, sum_fee, PLN)
+    sum_PNL += PNL
+    sum_fee += fee
+    PNL = 0
+    fee = 0
+
+A = sum_PNL - sum_fee
+result = 'PNL = %f - %f = %f' %(sum_PNL, sum_fee, A)
 print(result)
