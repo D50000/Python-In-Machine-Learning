@@ -520,7 +520,9 @@ for index, row in PNL_test.iterrows():
             OOO = row['Open']
 
     sum_PNL += PNL
+    # print(sum_PNL)
     sum_fee += fee
+    # print(fee)
     PNL = 0
     fee = 0
 
