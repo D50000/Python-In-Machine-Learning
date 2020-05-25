@@ -51,6 +51,10 @@ Larry William's R%
 ### Model selection
 ![](https://github.com/D50000/Python-In-Machine-Learning/blob/master/images/Loss_functions.PNG)
 - Classification strategy  
+    - Accuracy
+    - Precision
+    - Recall
+    - F1 Measure
 - Regression strategy  
     - Linear Regression model
     - Mean squared error
