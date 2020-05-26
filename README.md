@@ -22,7 +22,7 @@ https://www.sciencedirect.com/science/article/abs/pii/S0957417414004473
 
 
 ### Technical Indicators
-If can't install **ta-lib** check this ![here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib)
+If can't install **ta-lib** check this [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#ta-lib)
 - **SMA**:  
 Simple Moving Average  
 - **EMA**:  
@@ -62,5 +62,6 @@ Larry William's R%
     - Adjusted R-squaredp-value
 
 #### reference:  
+[https://scikit-learn.org/0.18/modules/generated/sklearn.metrics.classification_report.html](https://scikit-learn.org/0.18/modules/generated/sklearn.metrics.classification_report.html)
 [https://heartbeat.fritz.ai/5-regression-loss-functions-all-machine-learners-should-know-4fb140e9d4b0](https://heartbeat.fritz.ai/5-regression-loss-functions-all-machine-learners-should-know-4fb140e9d4b0)
 [https://www.geeksforgeeks.org/ml-implementing-l1-and-l2-regularization-using-sklearn/](https://www.geeksforgeeks.org/ml-implementing-l1-and-l2-regularization-using-sklearn/)
