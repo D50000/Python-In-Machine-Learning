@@ -348,8 +348,9 @@ df['K_percent_sig'] = np.sign(df['K_percent']-df['K_percent'].shift(1))
 df['D_percent_sig'] = np.sign(df['D_percent']-df['D_percent'].shift(1))
 df['W_percent_sig'] = np.sign(df['W_percent']-df['W_percent'].shift(1))
 # % can't be 0
+# df['K_percent_sig'].replace(0,np.nan,inplace=True)
+# df['D_percent_sig'].replace(0,np.nan,inplace=True)
 # df['W_percent_sig'].replace(0,np.nan,inplace=True)
-# print(np.unique(df['W_percent_sig']))
 
 df['ADO_sig'] = np.sign(df['ADO']-df['ADO'].shift(1))
 df['ADO_sig'].replace(0,np.nan,inplace=True)
