@@ -10,20 +10,16 @@ import requests
 import datetime
 
 import pandas as pd
-print(pd.__version__)
 import numpy as np
-print (np.version.version)
-import talib
+import statistics 
+# import talib
 
-
-################### data preprocessing
-r1 = requests.get('http://fapi.binance.com/fapi/v1/time').json()
+r1 = requests.get('http://api.binance.com/api/v3/time').json()
 period = 86400 * 360 * 1000  # ms
 startTime = r1['serverTime'] - period
 interval = '5m'
 raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&interval=' + interval).json()
-# print(startTime)
-# print(len(raw_Data))
+# print(raw_Data)
 
 date_Array = []
 Open_Array = []
@@ -46,3 +42,22 @@ for i, c in enumerate(raw_Data):
     Low_Array.append(float(c[3]))
     Close_Array.append(float(c[4]))
     Volume_Array.append(float(c[5]))
+
+dic = {
+    'date': date_Array,
+    'Open': Open_Array,
+    'High': High_Array,
+    'Low': Low_Array,
+    'Close': Close_Array,
+    'Volume': Volume_Array
+    }
+df = pd.DataFrame(data=dic)
+# print(df['High'].values)
+df['OCA'] = abs((df['Close'].values - df['Open'].values)) / df['Open'].values
+df['HLA'] = df['High'].values / ((df['High'].values + df['Low'].values) / 2)
+df=df.dropna()
+print(df['OCA'])
+print(df['HLA'])
+print('======================================')
+print('mean: %f' %(statistics.mean(df['HLA'].values)))
+print('stdev: %f' %(statistics.stdev(df['HLA'].values)))
