@@ -119,7 +119,7 @@ print('intercept:',clf.intercept_)
 print('coefficient:',clf.coef_)
 print(clf.predict(test_X))
 # Evaluate the model
-mse = np.mean((clf.predict(train_X) - train_Y) ** 2)
+mse = np.mean((clf.predict(test_X) - train_Y) ** 2)
 r_squared = clf.score(train_X, train_Y)
 adj_r_squared = r_squared - (1 - r_squared) * (train_X.shape[1] / (train_X.shape[0] - train_X.shape[1] - 1))
 
