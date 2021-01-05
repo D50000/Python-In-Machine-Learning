@@ -17,13 +17,13 @@ print ('numpy: ' + np.version.version)
 import matplotlib.pyplot as plt
 import talib
 
-################### data preprocessing
-r1 = requests.get('http://fapi.binance.com/api/v1/time').json()
+################### data preprocessing configuration
+r1 = requests.get('https://fapi.binance.com/fapi/v1/time').json()
 period = 86400 * 360 * 1000  # ms
 startTime = r1['serverTime'] - period
-interval = '6h'
+interval = '1h'
 raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&limit=1500&interval=' + interval).json()
-# print(r2)
+
 
 # [
 #   [
@@ -68,16 +68,24 @@ for i, c in enumerate(raw_Data):
     Low_Array.append(float(c[3]))
     Close_Array.append(float(c[4]))
     Volume_Array.append(float(c[5]))
-# print(Volume_Array)
+    Total_Array.append(float(c[6]))
+    Order_Array.append(float(c[7]))
+    Taker_Volume_Array.append(float(c[8]))
+    Taker_Total_Array.append(float(c[9]))
 
-# df_numpy = {
-#     'date': date_Array,
-#     'Open': Open_Array,
-#     'High': High_Array,
-#     'Low': Low_Array,
-#     'Close': Close_Array,
-#     'Volume': Volume_Array
-#     }
+df_numpy = {
+    'date': date_Array,
+    'Open': Open_Array,
+    'High': High_Array,
+    'Low': Low_Array,
+    'Close': Close_Array,
+    'Volume': Volume_Array,
+    'Total_Array': Total_Array,
+    'Order_Array': Order_Array,
+    'Taker_Volume_Array:': Taker_Volume_Array,
+    'Taker_Total_Array': Taker_Total_Array
+    }
+    
 # df = pd.DataFrame(data=df_numpy)
 # df.index = pd.to_datetime(df.date.astype(np.str))
 
