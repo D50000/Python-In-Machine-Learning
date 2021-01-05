@@ -22,7 +22,7 @@ r1 = requests.get('https://fapi.binance.com/fapi/v1/time').json()
 period = 86400 * 360 * 1000  # ms
 startTime = r1['serverTime'] - period
 interval = '1h'
-raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&limit=1500&interval=' + interval).json()
+raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&limit=10&interval=' + interval).json()
 
 
 # [
@@ -82,14 +82,13 @@ df_numpy = {
     'Volume': Volume_Array,
     'Total_Array': Total_Array,
     'Order_Array': Order_Array,
-    'Taker_Volume_Array:': Taker_Volume_Array,
+    'Taker_Volume_Array': Taker_Volume_Array,
     'Taker_Total_Array': Taker_Total_Array
     }
-    
-# df = pd.DataFrame(data=df_numpy)
-# df.index = pd.to_datetime(df.date.astype(np.str))
+df = pd.DataFrame(data=df_numpy)
+df.index = pd.to_datetime(df.date.astype(np.str))
 
-# price = df['Close']
+price = df['Close']
 # df['sma'] = talib.SMA(price.values, 7)
 # df['ema'] = talib.EMA(price.values, 7)
 # df['wma'] = talib.WMA(price.values, 7)
@@ -103,43 +102,43 @@ df_numpy = {
 # df['ADO'] = talib.ADOSC(df['High'].values, df['Low'].values, df['Close'].values, df['Volume'].values)
 # # print(ADO)
 
-# # price.pct_change().head()
-# df['price_mov'] = price.pct_change().shift(-1)
-# df=df.dropna()
-# print(df)
+# price.pct_change().head()
+df['price_mov'] = price.pct_change().shift(-1)
+df=df.dropna()
+print(df)
 
 
-# ################### split data to train and test group
-# n_sample = df.shape[0]
-# n_train = np.int(n_sample*0.5)
-# train = df.iloc[:n_train,:]
-# test = df.iloc[n_train:,:]
-# # print(train)
+################### split data to train and test group
+n_sample = df.shape[0]
+n_train = np.int(n_sample*0.5)
+train = df.iloc[:n_train,:]
+test = df.iloc[n_train:,:]
+# print(train)
 
-# # print(df.columns)
-# train_X = train[['sma', 'ema', 'wma','ADXR', 'mom', 'K_percent', 'D_percent', 'rsi', 'macd', 'W_percent', 'cci', 'ADO']]
-# train_Y = np.array(train[['price_mov']])
+# print(df.columns)
+train_X = train[['Open', 'High', 'Low', 'Close', 'Volume', 'Total_Array', 'Order_Array', 'Taker_Volume_Array', 'Taker_Total_Array']]
+train_Y = np.array(train[['price_mov']])
 
-# test_X = test[['sma', 'ema', 'wma','ADXR', 'mom', 'K_percent', 'D_percent', 'rsi', 'macd', 'W_percent', 'cci', 'ADO']]
-# test_Y = np.array(test[['price_mov']])
-# print(train_X)
+test_X = test[['Open', 'High', 'Low', 'Close', 'Volume', 'Total_Array', 'Order_Array', 'Taker_Volume_Array', 'Taker_Total_Array']]
+test_Y = np.array(test[['price_mov']])
+
 
 # ################### build the LinearRegression model 
-# from sklearn.linear_model import LinearRegression
-# from sklearn.feature_selection import f_regression
-# clf = LinearRegression()
-# clf.fit(train_X, train_Y.ravel())
-# print('intercept:',clf.intercept_)
-# print('coefficient:',clf.coef_)
-# print(clf.predict(test_X))
-# # Evaluate the model
-# mse = np.mean((clf.predict(train_X) - train_Y) ** 2)
-# r_squared = clf.score(train_X, train_Y)
-# adj_r_squared = r_squared - (1 - r_squared) * (train_X.shape[1] / (train_X.shape[0] - train_X.shape[1] - 1))
+from sklearn.linear_model import LinearRegression
+from sklearn.feature_selection import f_regression
+model = LinearRegression()
+model.fit(train_X, train_Y)
+print('intercept:',model.intercept_)
+print('coefficient:',model.coef_)
+print(model.predict(test_X))
+# Evaluate the model
+mse = np.mean((model.predict(test_X) - test_Y) ** 2)
+r_squared = model.score(test_X, test_Y)
+adj_r_squared = r_squared - (1 - r_squared) * (test_X.shape[1] / (test_X.shape[0] - test_X.shape[1] - 1))
 
 
-# print('Mean squared error: ' + str(mse))
-# print('R-squared: ' + str(r_squared))
-# print('Adjusted R-squared: ' + str(adj_r_squared))
-# print('p-value: '+ str(f_regression(train_X, train_Y.ravel())[1]))
+print('Mean squared error: ' + str(mse))
+print('R-squared: ' + str(r_squared))
+print('Adjusted R-squared: ' + str(adj_r_squared))
+print('p-value: '+ str(f_regression(test_X, test_Y)[1]))
 
