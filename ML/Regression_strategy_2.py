@@ -22,7 +22,7 @@ r1 = requests.get('https://fapi.binance.com/fapi/v1/time').json()
 period = 86400 * 360 * 1000  # ms
 startTime = r1['serverTime'] - period
 interval = '1h'
-raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&limit=10&interval=' + interval).json()
+raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&limit=1500&interval=' + interval).json()
 
 
 # [
@@ -80,10 +80,10 @@ df_numpy = {
     'Low': Low_Array,
     'Close': Close_Array,
     'Volume': Volume_Array,
-    'Total_Array': Total_Array,
-    'Order_Array': Order_Array,
-    'Taker_Volume_Array': Taker_Volume_Array,
-    'Taker_Total_Array': Taker_Total_Array
+    'Total': Total_Array,
+    'Order': Order_Array,
+    'Taker_Volume': Taker_Volume_Array,
+    'Taker_Total': Taker_Total_Array
     }
 df = pd.DataFrame(data=df_numpy)
 df.index = pd.to_datetime(df.date.astype(np.str))
@@ -116,12 +116,11 @@ test = df.iloc[n_train:,:]
 # print(train)
 
 # print(df.columns)
-train_X = train[['Open', 'High', 'Low', 'Close', 'Volume', 'Total_Array', 'Order_Array', 'Taker_Volume_Array', 'Taker_Total_Array']]
+train_X = train[['Open', 'High', 'Low', 'Close', 'Volume', 'Total', 'Order', 'Taker_Volume', 'Taker_Total']]
 train_Y = np.array(train[['price_mov']])
 
-test_X = test[['Open', 'High', 'Low', 'Close', 'Volume', 'Total_Array', 'Order_Array', 'Taker_Volume_Array', 'Taker_Total_Array']]
+test_X = test[['Open', 'High', 'Low', 'Close', 'Volume', 'Total', 'Order', 'Taker_Volume', 'Taker_Total']]
 test_Y = np.array(test[['price_mov']])
-
 
 # ################### build the LinearRegression model 
 from sklearn.linear_model import LinearRegression
