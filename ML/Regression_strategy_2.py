@@ -121,10 +121,12 @@ test = df.iloc[n_train:,:]
 # print(train)
 
 # print(df.columns)
-train_X = train[['Open', 'High', 'Low', 'Close', 'Volume', 'Total', 'Order', 'Taker_Volume', 'Taker_Total']]
+train_X = train[['Open', 'High', 'Low', 'Close', 'Volume', 'Total', 'Order', 'Taker_Volume', 'Taker_Total',
+                 'sma5', 'ema5', 'sma10', 'ema10', 'sma20', 'ema20', 'sma30', 'ema30', 'sma50', 'ema50', 'sma100', 'ema100', 'sma200', 'ema200']]
 train_Y = np.array(train[['price_mov']])
 
-test_X = test[['Open', 'High', 'Low', 'Close', 'Volume', 'Total', 'Order', 'Taker_Volume', 'Taker_Total']]
+test_X = test[['Open', 'High', 'Low', 'Close', 'Volume', 'Total', 'Order', 'Taker_Volume', 'Taker_Total',
+               'sma5', 'ema5', 'sma10', 'ema10', 'sma20', 'ema20', 'sma30', 'ema30', 'sma50', 'ema50', 'sma100', 'ema100', 'sma200', 'ema200']]
 test_Y = np.array(test[['price_mov']])
 
 # ################### build the LinearRegression model 
