@@ -104,8 +104,22 @@ df['ema100'] = talib.EMA(price.values, 100)
 df['sma200'] = talib.SMA(price.values, 200)
 df['ema200'] = talib.EMA(price.values, 200)
 
-# df['sma5_sig'] = (df['Close']>=df['sma5']).astype(np.int).replace(0, -1, inplace=True)
-# df['ema5_sig'] = (df['Close']>=df['ema5']).astype(np.int).replace(0, -1)
+
+################### convert technical data to trend prediction signal data
+df['sma5_sig'] = (df['Close']>=df['sma5']).astype(np.int).replace(0, -1)
+df['ema5_sig'] = (df['Close']>=df['ema5']).astype(np.int).replace(0, -1)
+df['sma10_sig'] = (df['Close']>=df['sma10']).astype(np.int).replace(0, -1)
+df['ema10_sig'] = (df['Close']>=df['ema10']).astype(np.int).replace(0, -1)
+df['sma20_sig'] = (df['Close']>=df['sma20']).astype(np.int).replace(0, -1)
+df['ema20_sig'] = (df['Close']>=df['ema20']).astype(np.int).replace(0, -1)
+df['sma30_sig'] = (df['Close']>=df['sma30']).astype(np.int).replace(0, -1)
+df['ema30_sig'] = (df['Close']>=df['ema30']).astype(np.int).replace(0, -1)
+df['sma50_sig'] = (df['Close']>=df['sma50']).astype(np.int).replace(0, -1)
+df['ema50_sig'] = (df['Close']>=df['ema50']).astype(np.int).replace(0, -1)
+df['sma100_sig'] = (df['Close']>=df['sma100']).astype(np.int).replace(0, -1)
+df['ema100_sig'] = (df['Close']>=df['ema100']).astype(np.int).replace(0, -1)
+df['sma200_sig'] = (df['Close']>=df['sma200']).astype(np.int).replace(0, -1)
+df['ema200_sig'] = (df['Close']>=df['ema200']).astype(np.int).replace(0, -1)
 
 # price.pct_change().head()
 df['price_mov'] = price.pct_change().shift(-1)
@@ -122,11 +136,11 @@ test = df.iloc[n_train:,:]
 
 # print(df.columns)
 train_X = train[['Open', 'High', 'Low', 'Close', 'Volume', 'Total', 'Order', 'Taker_Volume', 'Taker_Total',
-                 'sma5', 'ema5', 'sma10', 'ema10', 'sma20', 'ema20', 'sma30', 'ema30', 'sma50', 'ema50', 'sma100', 'ema100', 'sma200', 'ema200']]
+                 'sma5_sig', 'ema5_sig', 'sma10_sig', 'ema10_sig', 'sma20_sig', 'ema20_sig', 'sma30_sig', 'ema30_sig', 'sma50_sig', 'ema50_sig', 'sma100_sig', 'ema100_sig', 'sma200_sig', 'ema200_sig']]
 train_Y = np.array(train[['price_mov']])
 
 test_X = test[['Open', 'High', 'Low', 'Close', 'Volume', 'Total', 'Order', 'Taker_Volume', 'Taker_Total',
-               'sma5', 'ema5', 'sma10', 'ema10', 'sma20', 'ema20', 'sma30', 'ema30', 'sma50', 'ema50', 'sma100', 'ema100', 'sma200', 'ema200']]
+               'sma5_sig', 'ema5_sig', 'sma10_sig', 'ema10_sig', 'sma20_sig', 'ema20_sig', 'sma30_sig', 'ema30_sig', 'sma50_sig', 'ema50_sig', 'sma100_sig', 'ema100_sig', 'sma200_sig', 'ema200_sig']]
 test_Y = np.array(test[['price_mov']])
 
 # ################### build the LinearRegression model 
