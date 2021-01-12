@@ -122,8 +122,8 @@ df['sma200_sig'] = (df['Close']>=df['sma200']).astype(np.int).replace(0, -1)
 df['ema200_sig'] = (df['Close']>=df['ema200']).astype(np.int).replace(0, -1)
 
 # price.pct_change().head()
-df['price_mov'] = np.sign(price.pct_change().shift(-1))  # predict Long/Short
-# df['price_mov'] = price.pct_change().shift(-1)         # predict change %
+# df['price_mov'] = np.sign(price.pct_change().shift(-1))  # predict Long/Short
+df['price_mov'] = price.pct_change().shift(-1)         # predict change %
 df=df.dropna()
 print(df)
 
@@ -147,12 +147,14 @@ test_Y = np.array(test[['price_mov']])
 # ################### build the LinearRegression model 
 from sklearn.linear_model import LinearRegression
 from sklearn.feature_selection import f_regression
-from sklearn.preprocessing import Normalizer
+from sklearn.preprocessing import MinMaxScaler
 model = LinearRegression()
 model.fit(train_X, train_Y)
 print('intercept:',model.intercept_)
 print('coefficient:',model.coef_)
-print(Normalizer().fit(model.predict(test_X)).transform(model.predict(test_X)))
+# print(model.predict(test_X))
+min_max_scaler = MinMaxScaler((-1,1))
+print(min_max_scaler.fit_transform(model.predict(test_X)))
 # Evaluate the model
 mse = np.mean((model.predict(test_X) - test_Y) ** 2)
 r_squared = model.score(test_X, test_Y)
@@ -162,5 +164,5 @@ adj_r_squared = r_squared - (1 - r_squared) * (test_X.shape[1] / (test_X.shape[0
 print('Mean squared error: ' + str(mse))
 print('R-squared: ' + str(r_squared))
 print('Adjusted R-squared: ' + str(adj_r_squared))
-print('p-value: '+ str(f_regression(test_X, test_Y)[1]))
+print('p-value: '+ str(f_regression(test_X, test_Y.ravel())[1]))
 
