@@ -166,3 +166,6 @@ print('R-squared: ' + str(r_squared))
 print('Adjusted R-squared: ' + str(adj_r_squared))
 print('p-value: '+ str(f_regression(test_X, test_Y.ravel())[1]))
 
+# To do:
+# regression trainX: +/- > predict y > +/- , result do "normalization" then "binary"
+
