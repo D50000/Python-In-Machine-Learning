@@ -110,7 +110,6 @@ df['sma48_sig'] = (df['Close']>=df['sma48']).astype(np.int).replace(0, -1)
 df['sma96_sig'] = (df['Close']>=df['sma96']).astype(np.int).replace(0, -1)
 df['sma144_sig'] = (df['Close']>=df['sma144']).astype(np.int).replace(0, -1)
 df['sma288_sig'] = (df['Close']>=df['sma288']).astype(np.int).replace(0, -1)
-"""
 
 ################### EMA
 df['ema3'] = talib.EMA(price.values, 3)
@@ -131,7 +130,27 @@ df['ema48_sig'] = (df['Close']>=df['ema48']).astype(np.int).replace(0, -1)
 df['ema96_sig'] = (df['Close']>=df['ema96']).astype(np.int).replace(0, -1)
 df['ema144_sig'] = (df['Close']>=df['ema144']).astype(np.int).replace(0, -1)
 df['ema288_sig'] = (df['Close']>=df['ema288']).astype(np.int).replace(0, -1)
+"""
 
+################### WMA
+df['wma3'] = talib.WMA(price.values, 3)
+df['wma6'] = talib.WMA(price.values, 6)
+df['wma12'] = talib.WMA(price.values, 12)
+df['wma24'] = talib.WMA(price.values, 24)
+df['wma48'] = talib.WMA(price.values, 48)
+df['wma96'] = talib.WMA(price.values, 96)
+df['wma144'] = talib.WMA(price.values, 144)
+df['wma288'] = talib.WMA(price.values, 288)
+
+################### convert technical data to trend prediction signal data
+df['wma3_sig'] = (df['Close']>=df['wma3']).astype(np.int).replace(0, -1)
+df['wma6_sig'] = (df['Close']>=df['wma6']).astype(np.int).replace(0, -1)
+df['wma12_sig'] = (df['Close']>=df['wma12']).astype(np.int).replace(0, -1)
+df['wma24_sig'] = (df['Close']>=df['wma24']).astype(np.int).replace(0, -1)
+df['wma48_sig'] = (df['Close']>=df['wma48']).astype(np.int).replace(0, -1)
+df['wma96_sig'] = (df['Close']>=df['wma96']).astype(np.int).replace(0, -1)
+df['wma144_sig'] = (df['Close']>=df['wma144']).astype(np.int).replace(0, -1)
+df['wma288_sig'] = (df['Close']>=df['wma288']).astype(np.int).replace(0, -1)
 
 # price.pct_change().head()
 df['price_mov'] = np.sign(price.pct_change().shift(-1))
@@ -148,11 +167,11 @@ test = df.iloc[n_train:,:]
 
 # print(df.columns)
 train_X = train[['Open', 'High', 'Low', 'Close', 'Taker_Volume',
-                 'ema3_sig', 'ema6_sig', 'ema12_sig', 'ema24_sig', 'ema48_sig', 'ema96_sig', 'ema144_sig', 'ema288_sig']]
+                 'wma3_sig', 'wma6_sig', 'wma12_sig', 'wma24_sig', 'wma48_sig', 'wma96_sig', 'wma144_sig', 'wma288_sig']]
 train_Y = np.array(train[['price_mov']])
 
 test_X = test[['Open', 'High', 'Low', 'Close', 'Taker_Volume',
-                 'ema3_sig', 'ema6_sig', 'ema12_sig', 'ema24_sig', 'ema48_sig', 'ema96_sig', 'ema144_sig', 'ema288_sig']]
+                 'wma3_sig', 'wma6_sig', 'wma12_sig', 'wma24_sig', 'wma48_sig', 'wma96_sig', 'wma144_sig', 'wma288_sig']]
 test_Y = np.array(test[['price_mov']])
 
 # ################### build the LinearRegression model 
