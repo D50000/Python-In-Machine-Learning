@@ -62,6 +62,7 @@ Larry William's R%
     - Adjusted R-squaredp-value
 
 #### reference:  
+[http://mrjbq7.github.io/ta-lib/doc_index.html](http://mrjbq7.github.io/ta-lib/doc_index.html)  
 [https://scikit-learn.org/stable/modules/generated/sklearn.metrics.r2_score.html](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.r2_score.html)  
 [https://scikit-learn.org/0.18/modules/generated/sklearn.metrics.classification_report.html](https://scikit-learn.org/0.18/modules/generated/sklearn.metrics.classification_report.html)  
 [https://heartbeat.fritz.ai/5-regression-loss-functions-all-machine-learners-should-know-4fb140e9d4b0](https://heartbeat.fritz.ai/5-regression-loss-functions-all-machine-learners-should-know-4fb140e9d4b0)  
