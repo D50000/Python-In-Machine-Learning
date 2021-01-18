@@ -67,7 +67,7 @@ for period in range(60):
         if i == 0:
             previous_start_timestamp = start_timestamp
         if i == len(raw_Data)-1:
-            print('Last data: ' + str(c))
+            # print('Last data: ' + str(c))
             previous_end_timestamp = str(c[0])
         newTime = int(start_timestamp[0:10])
         date = datetime.datetime.fromtimestamp(newTime).isoformat()
@@ -106,7 +106,7 @@ price = df['Close']
 print (df)
 
 
-"""
+
 #######################################   Overlap Studies
 ################### SMA
 df['sma3'] = talib.SMA(price.values, 3)
@@ -126,7 +126,7 @@ df['sma48_sig'] = (df['Close']>=df['sma48']).astype(np.int).replace(0, -1)
 df['sma96_sig'] = (df['Close']>=df['sma96']).astype(np.int).replace(0, -1)
 df['sma144_sig'] = (df['Close']>=df['sma144']).astype(np.int).replace(0, -1)
 df['sma288_sig'] = (df['Close']>=df['sma288']).astype(np.int).replace(0, -1)
-
+"""
 ################### EMA
 df['ema3'] = talib.EMA(price.values, 3)
 df['ema6'] = talib.EMA(price.values, 6)
@@ -193,33 +193,34 @@ df = df[df['ADXR288'].notna()]
 # df['ADXR96_sig'] = np.sign(df['ADXR96'])
 # df['ADXR144_sig'] = np.sign(df['ADXR144'])
 # df['ADXR288_sig'] = np.sign(df['ADXR288'])
-
+"""
 
 # price.pct_change().head()
 # df['price_mov'] = np.sign(price.pct_change().shift(-1))
-df['price_diff'] = price.diff().shift(-1)
-df = df[df['price_diff'].notna()]
+df['price_mov'] = price.pct_change().shift(-1)
+###df['price_diff'] = price.diff().shift(-1)
+###df = df[df['price_diff'].notna()]
 # df['price_diff'] = df['percent_mov'].abs() / df['Open']
-df.eval('percent_mov = price_diff.abs() / Close', inplace=True)
-df.dropna()
+###df.eval('percent_mov = price_diff.abs() / Close', inplace=True)
+df=df.dropna()
 print(df)
 
 
 ################### split data to train and test group
 n_sample = df.shape[0]
-n_train = np.int(n_sample*0.8)
+n_train = np.int(n_sample*0.7)
 train = df.iloc[:n_train,:]
 test = df.iloc[n_train:,:]
 # print(train)
 
 # print(df.columns)
 train_X = train[['Open', 'High', 'Low', 'Close', 'Taker_Volume',
-                 'ADXR3', 'ADXR6', 'ADXR12', 'ADXR24', 'ADXR48', 'ADXR96', 'ADXR144', 'ADXR288']]
-train_Y = np.array(train[['percent_mov']])
+                 'sma3_sig', 'sma6_sig', 'sma12_sig', 'sma24_sig', 'sma48_sig', 'sma96_sig', 'sma144_sig', 'sma288_sig']]
+train_Y = np.array(train[['price_mov']])
 
 test_X = test[['Open', 'High', 'Low', 'Close', 'Taker_Volume',
-                 'ADXR3', 'ADXR6', 'ADXR12', 'ADXR24', 'ADXR48', 'ADXR96', 'ADXR144', 'ADXR288']]
-test_Y = np.array(test[['percent_mov']])
+                 'sma3_sig', 'sma6_sig', 'sma12_sig', 'sma24_sig', 'sma48_sig', 'sma96_sig', 'sma144_sig', 'sma288_sig']]
+test_Y = np.array(test[['price_mov']])
 
 # ################### build the LinearRegression model 
 from sklearn.linear_model import LinearRegression
@@ -229,9 +230,9 @@ model = LinearRegression()
 model.fit(train_X, train_Y)
 print('intercept:',model.intercept_)
 print('coefficient:',model.coef_)
-# print(model.predict(test_X))
-min_max_scaler = MinMaxScaler((-1,1))
-print(min_max_scaler.fit_transform(model.predict(test_X)))
+print(model.predict(test_X))
+# min_max_scaler = MinMaxScaler((-1,1))
+# print(min_max_scaler.fit_transform(model.predict(test_X)))
 # Evaluate the model
 mse = np.mean((model.predict(test_X) - test_Y) ** 2)
 r_squared = model.score(test_X, test_Y)
@@ -242,4 +243,3 @@ print('Mean squared error: ' + str(mse))
 print('R-squared: ' + str(r_squared))
 print('Adjusted R-squared: ' + str(adj_r_squared))
 print('p-value: '+ str(f_regression(test_X, test_Y.ravel())[1]))
-"""
