@@ -27,17 +27,17 @@ raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&
 
 # [
 #   [
-#     1499040000000,      // 開盤時間
-#     "0.01634790",       // 開盤價格
-#     "0.80000000",       // 最高價格
-#     "0.01575800",       // 最低價格
-#     "0.01577100",       // 收盤價格
-#     "148976.11427815",  // 成交數量
-#     1499644799999,      // 收盤時間
-#     "2434.19055334",    // 成交金额
-#     308,                // 成交筆數
-#     "1756.87402397",    // taker成交數量
-#     "28.46694368",      // taker成交金额
+#     1499040000000,      // 開盤時間 [0]
+#     "0.01634790",       // 開盤價格 [1]
+#     "0.80000000",       // 最高價格 [2]
+#     "0.01575800",       // 最低價格 [3]
+#     "0.01577100",       // 收盤價格 [4]
+#     "148976.11427815",  // 成交數量 [5]
+#     1499644799999,      // 收盤時間 [6]
+#     "2434.19055334",    // 成交金额 [7]
+#     308,                // 成交筆數 [8]
+#     "1756.87402397",    // taker成交數量 [9]
+#     "28.46694368",      // taker成交金额 [10]
 #     "17928899.62484339" // 忽略
 #   ]
 # ]
@@ -68,10 +68,10 @@ for i, c in enumerate(raw_Data):
     Low_Array.append(float(c[3]))
     Close_Array.append(float(c[4]))
     Volume_Array.append(float(c[5]))
-    Total_Array.append(float(c[6]))
-    Order_Array.append(float(c[7]))
-    Taker_Volume_Array.append(float(c[8]))
-    Taker_Total_Array.append(float(c[9]))
+    Total_Array.append(float(c[7]))
+    Order_Array.append(float(c[8]))
+    Taker_Volume_Array.append(float(c[9]))
+    Taker_Total_Array.append(float(c[10]))
 
 df_numpy = {
     'date': date_Array,
