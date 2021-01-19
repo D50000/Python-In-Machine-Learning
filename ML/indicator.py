@@ -44,6 +44,7 @@ raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&
 
 start_timestamp_Array = []
 date_Array = []
+Open_Time_Array = []
 Open_Array = []
 High_Array = []
 Low_Array = []
@@ -56,7 +57,7 @@ Taker_Total_Array = []
 
 previous_start_timestamp = 0
 previous_end_timestamp = 0
-for period in range(60):
+for period in range(1):
     """
     print(previous_start_timestamp)
     print('    VVVVV')
@@ -74,6 +75,7 @@ for period in range(60):
 
         start_timestamp_Array.insert(i, int(c[0]))
         date_Array.insert(i, date)
+        Open_Time_Array.insert(i, date[11:19])
         Open_Array.insert(i, float(c[1]))
         High_Array.insert(i, float(c[2]))
         Low_Array.insert(i, float(c[3]))
@@ -90,6 +92,7 @@ for period in range(60):
 df_numpy = {
     'timestamp': start_timestamp_Array,
     'date': date_Array,
+    'Open_Time': Open_Time_Array,
     'Open': Open_Array,
     'High': High_Array,
     'Low': Low_Array,
