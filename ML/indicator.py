@@ -57,7 +57,7 @@ Taker_Total_Array = []
 
 previous_start_timestamp = 0
 previous_end_timestamp = 0
-for period in range(1):
+for period in range(120):
     """
     print(previous_start_timestamp)
     print('    VVVVV')
@@ -72,10 +72,10 @@ for period in range(1):
             previous_end_timestamp = str(c[0])
         newTime = int(start_timestamp[0:10])
         date = datetime.datetime.fromtimestamp(newTime).isoformat()
-
+        
         start_timestamp_Array.insert(i, int(c[0]))
         date_Array.insert(i, date)
-        Open_Time_Array.insert(i, date[11:19])
+        Open_Time_Array.insert(i, int(date[11:13])*60 + int(date[14:16]))
         Open_Array.insert(i, float(c[1]))
         High_Array.insert(i, float(c[2]))
         Low_Array.insert(i, float(c[3]))
@@ -217,11 +217,11 @@ test = df.iloc[n_train:,:]
 # print(train)
 
 # print(df.columns)
-train_X = train[['Open', 'High', 'Low', 'Close', 'Taker_Volume',
+train_X = train[['Open_Time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Taker_Volume', 'Order',
                  'sma3_sig', 'sma6_sig', 'sma12_sig', 'sma24_sig', 'sma48_sig', 'sma96_sig', 'sma144_sig', 'sma288_sig']]
 train_Y = np.array(train[['price_mov']])
 
-test_X = test[['Open', 'High', 'Low', 'Close', 'Taker_Volume',
+test_X = test[['Open_Time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Taker_Volume', 'Order',
                  'sma3_sig', 'sma6_sig', 'sma12_sig', 'sma24_sig', 'sma48_sig', 'sma96_sig', 'sma144_sig', 'sma288_sig']]
 test_Y = np.array(test[['price_mov']])
 
