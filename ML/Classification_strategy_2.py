@@ -3,7 +3,7 @@
 # https://binance-docs.github.io/apidocs/futures/en/#market-data-endpoints
 # https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&interval=1h&limit=1500
 # ============================================================
-# Copyright 2021, Eddie Hsu (D50000)
+# Copyright 2020, Eddie Hsu (D50000)
 # Released MySelf
 # ============================================================
 
@@ -21,29 +21,30 @@ import talib
 r1 = requests.get('https://fapi.binance.com/fapi/v1/time').json()
 period = 86400 * 360 * 1000  # ms
 startTime = r1['serverTime'] - period
-interval = '8h'
-raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=BNBUSDT&limit=1500&interval=' + interval).json()
+interval = '5m'
+raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&limit=1500&interval=' + interval).json()
 
 
 # [
 #   [
-#     1499040000000,      // 開盤時間
-#     "0.01634790",       // 開盤價格
-#     "0.80000000",       // 最高價格
-#     "0.01575800",       // 最低價格
-#     "0.01577100",       // 收盤價格
-#     "148976.11427815",  // 成交數量
-#     1499644799999,      // 收盤時間
-#     "2434.19055334",    // 成交金额
-#     308,                // 成交筆數
-#     "1756.87402397",    // taker成交數量
-#     "28.46694368",      // taker成交金额
+#     1499040000000,      // 開盤時間 [0]
+#     "0.01634790",       // 開盤價格 [1]
+#     "0.80000000",       // 最高價格 [2]
+#     "0.01575800",       // 最低價格 [3]
+#     "0.01577100",       // 收盤價格 [4]
+#     "148976.11427815",  // 成交數量 [5]
+#     1499644799999,      // 收盤時間 [6]
+#     "2434.19055334",    // 成交金额 [7]
+#     308,                // 成交筆數 [8]
+#     "1756.87402397",    // taker成交數量 [9]
+#     "28.46694368",      // taker成交金额 [10]
 #     "17928899.62484339" // 忽略
 #   ]
 # ]
 
-
+start_timestamp_Array = []
 date_Array = []
+Open_Time_Array = []
 Open_Array = []
 High_Array = []
 Low_Array = []
@@ -53,28 +54,45 @@ Total_Array = []
 Order_Array = []
 Taker_Volume_Array = []
 Taker_Total_Array = []
-latest_data = None
-for i, c in enumerate(raw_Data):
-    start = str(c[0])
-    newTime = int(start[0:10])
-    date = datetime.datetime.fromtimestamp(newTime).isoformat()
-    if i == len(raw_Data)-1:
-        print(date)
-        print('Last data: ' + str(c))
-        latest_data = date
-    date_Array.append(date)
-    Open_Array.append(float(c[1]))
-    High_Array.append(float(c[2]))
-    Low_Array.append(float(c[3]))
-    Close_Array.append(float(c[4]))
-    Volume_Array.append(float(c[5]))
-    Total_Array.append(float(c[6]))
-    Order_Array.append(float(c[7]))
-    Taker_Volume_Array.append(float(c[8]))
-    Taker_Total_Array.append(float(c[9]))
+
+previous_start_timestamp = 0
+previous_end_timestamp = 0
+for period in range(70):
+    """
+    print(previous_start_timestamp)
+    print('    VVVVV')
+    print(previous_end_timestamp)
+    """
+    for i, c in enumerate(raw_Data):
+        start_timestamp = str(c[0])
+        if i == 0:
+            previous_start_timestamp = start_timestamp
+        if i == len(raw_Data)-1:
+            # print('Last data: ' + str(c))
+            previous_end_timestamp = str(c[0])
+        newTime = int(start_timestamp[0:10])
+        date = datetime.datetime.fromtimestamp(newTime).isoformat()
+        
+        start_timestamp_Array.insert(i, int(c[0]))
+        date_Array.insert(i, date)
+        Open_Time_Array.insert(i, int(date[11:13])*60 + int(date[14:16]))
+        Open_Array.insert(i, float(c[1]))
+        High_Array.insert(i, float(c[2]))
+        Low_Array.insert(i, float(c[3]))
+        Close_Array.insert(i, float(c[4]))
+        Volume_Array.insert(i, float(c[5]))
+        Total_Array.insert(i, float(c[7]))
+        Order_Array.insert(i, int(c[8]))
+        Taker_Volume_Array.insert(i, float(c[9]))
+        Taker_Total_Array.insert(i, float(c[10]))
+        new_start_timestamp = int(previous_start_timestamp) - (int(previous_end_timestamp) - int(previous_start_timestamp))
+        new_end_timestamp = int(previous_start_timestamp) - 300000
+    raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&interval=' + interval + '&startTime=' + str(new_start_timestamp) + '&endTime=' + str(new_end_timestamp)).json()
 
 df_numpy = {
+    'timestamp': start_timestamp_Array,
     'date': date_Array,
+    'Open_Time': Open_Time_Array,
     'Open': Open_Array,
     'High': High_Array,
     'Low': Low_Array,
@@ -87,8 +105,9 @@ df_numpy = {
     }
 df = pd.DataFrame(data=df_numpy)
 df.index = pd.to_datetime(df.date.astype(np.str))
-
 price = df['Close']
+# print (df)
+
 df['sma34'] = talib.SMA(price.values, 7)  # I1
 # df['sma200'] = talib.SMA(price, 200)
 df['ema34'] = talib.EMA(price.values, 7)  # I2
@@ -458,59 +477,3 @@ sixHourLater_Y_predict = clf.predict(test_X)
 print('LinearDiscriminantAnalysis: ' + str(sixHourLater_Y_predict[-1]))
 print('################# Predict end #################')
 
-
-# # Regression testing PNL
-# print('################# Predict PNL #################')
-# print(PNL_test)
-# # PNL_test.index = range(155)  # 12h
-# PNL_test.index = range(233)
-# sum_PNL = 0
-# PNL = 0
-# sum_fee = 0
-# fee = 0
-# fee_Coefficient = 0.04 * 0.01
-# action = None
-# OOO = None
-# CCC = None
-# for index, row in PNL_test.iterrows():
-#     if index == 0:
-#         continue
-#     if LS_test[index - 1] == 1:
-#         if action == None:
-#             fee = row['Open'] * fee_Coefficient
-#             action = 1
-#             OOO = row['Open']
-#         if action == 1:
-#             continue
-#         if action == -1:
-#             fee = row['Open'] * fee_Coefficient
-#             PNL = OOO - row['Open']
-#             # print('%f - %f' %(row['Open'], OOO))
-#             fee += row['Open'] * fee_Coefficient
-#             action = 1
-#             OOO = row['Open']
-#     else:
-#         if action == None:
-#             fee = row['Open'] * fee_Coefficient
-#             action = -1
-#             OOO = row['Open']
-#         if action == -1:
-#             continue
-#         if action == 1:
-#             fee = row['Open'] * fee_Coefficient
-#             PNL = row['Open'] - OOO
-#             # print('%f - %f' %(row['Open'], OOO))
-#             fee += row['Open'] * fee_Coefficient
-#             action = -1
-#             OOO = row['Open']
-
-#     sum_PNL += PNL
-#     # print(sum_PNL)
-#     sum_fee += fee
-#     # print(fee)
-#     PNL = 0
-#     fee = 0
-
-# A = sum_PNL - sum_fee
-# result = 'PNL = %f - %f = %f' %(sum_PNL, sum_fee, A)
-# print(result)
