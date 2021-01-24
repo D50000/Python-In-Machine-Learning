@@ -24,14 +24,15 @@ def normalize(train):
 	train = train.drop(["index"], axis=1)
 	train = train.drop(["date"], axis=1)
 	train = train.drop(["timestamp"], axis=1)
+	train = train.drop(["price_change"], axis=1)
 	train_norm = train.apply(lambda x: (x - np.mean(x)) / (np.max(x) - np.min(x)))
 	return train_norm
 
 def buildTrain(train, pastDay=30, futureDay=5):
 	X_train, Y_train = [], []
-	for i in range(train.shape[0]-futureDay-pastDay):
+	for i in range(train.shape[0]+1-futureDay-pastDay):
 		X_train.append(np.array(train.iloc[i:i+pastDay]))
-		Y_train.append(np.array(train.iloc[i+pastDay:i+pastDay+futureDay]["Close"]))
+		Y_train.append(np.array(train.iloc[i+pastDay:i+pastDay+futureDay]["price_LS"]))
 	return np.array(X_train), np.array(Y_train)
 
 def shuffle(X, Y):
@@ -65,7 +66,7 @@ print (train_norm)
 # build Data, use last 1 days to predict next 1 days
 X_train, Y_train = buildTrain(train_norm, 1, 1)
 # shuffle the data, and random seed is 10
-X_train, Y_train = shuffle(X_train, Y_train)
+# X_train, Y_train = shuffle(X_train, Y_train)
 # split training data and validation data
 X_train, Y_train, X_val, Y_val = splitData(X_train, Y_train, 0.1)
 
@@ -74,15 +75,17 @@ Y_train = Y_train[:,np.newaxis]
 Y_val = Y_val[:,np.newaxis]
 
 model = buildOneToOneModel(X_train.shape)
-callback = EarlyStopping(monitor="loss", patience=10, verbose=1, mode="auto")
-model.fit(X_train, Y_train, epochs=1000, batch_size=128, validation_data=(X_val, Y_val), callbacks=[callback])
-
+# callback = EarlyStopping(monitor="loss", patience=10, verbose=1, mode="auto")
+# history = model.fit(X_train, Y_train, epochs=1000, batch_size=128, validation_data=(X_val, Y_val), callbacks=[callback])
+history = model.fit(X_train, Y_train, epochs=50, batch_size=128, validation_data=(X_val, Y_val))
+print(history.history)
 
 
 
 # evaluation
-scores = model.evaluate(X_val, Y_val)
+# model.evaluate(X_train, Y_train)
 print("========================================================")
-print(scores)
+results = model.evaluate(X_train, Y_train)
+print("test loss, test acc:", results)
 # weight, Bias
 # print(model.layers[0].get_weights())
