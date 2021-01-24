@@ -53,7 +53,7 @@ def buildOneToOneModel(shape):
 	# output shape: (1, 1)
 	model.add(TimeDistributed(Dense(1)))    # or use model.add(Dense(1))
 	model.compile(loss="mse", optimizer="adam")
-	model.summary()
+	print(model.summary())
 	return model
 
 
@@ -78,3 +78,11 @@ callback = EarlyStopping(monitor="loss", patience=10, verbose=1, mode="auto")
 model.fit(X_train, Y_train, epochs=1000, batch_size=128, validation_data=(X_val, Y_val), callbacks=[callback])
 
 
+
+
+# evaluation
+scores = model.evaluate(X_val, Y_val)
+print("========================================================")
+print(scores)
+# weight, Bias
+# print(model.layers[0].get_weights())
