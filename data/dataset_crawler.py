@@ -104,5 +104,11 @@ df_numpy = {
     }
 df = pd.DataFrame(data=df_numpy)
 # df.index = pd.to_datetime(df.date.astype(np.str))
+
+
+# price.pct_change().head()
+df['price_change'] = df['Close'].pct_change().shift(-1)       # predict change %
+df['price_LS'] = np.sign(df['price_change'])  # predict Long/Short
+df=df.dropna()
 print (df)
 df.to_csv("eth_5m.csv", index_label="index")
