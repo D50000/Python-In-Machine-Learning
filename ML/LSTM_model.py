@@ -57,6 +57,15 @@ def buildOneToOneModel(shape):
 	print(model.summary())
 	return model
 
+def buildManyToOneModel(shape):
+    model = Sequential()
+    model.add(LSTM(10, input_length=shape[1], input_dim=shape[2]))
+    # output shape: (1, 1)
+    model.add(Dense(1))
+    model.compile(loss="mse", optimizer="adam")
+    model.summary()
+    return model
+
 
 
 
@@ -64,20 +73,20 @@ data = readTrain()
 train_norm = normalize(data)
 print (train_norm)
 # build Data, use last 1 days to predict next 1 days
-X_train, Y_train = buildTrain(train_norm, 1, 1)
+X_train, Y_train = buildTrain(train_norm, 12, 1)
 # shuffle the data, and random seed is 10
 # X_train, Y_train = shuffle(X_train, Y_train)
 # split training data and validation data
 X_train, Y_train, X_val, Y_val = splitData(X_train, Y_train, 0.1)
 
 # from 2 dimmension to 3 dimension
-Y_train = Y_train[:,np.newaxis]
-Y_val = Y_val[:,np.newaxis]
+# Y_train = Y_train[:,np.newaxis]
+# Y_val = Y_val[:,np.newaxis]
 
-model = buildOneToOneModel(X_train.shape)
+model = buildManyToOneModel(X_train.shape)
 # callback = EarlyStopping(monitor="loss", patience=10, verbose=1, mode="auto")
 # history = model.fit(X_train, Y_train, epochs=1000, batch_size=128, validation_data=(X_val, Y_val), callbacks=[callback])
-history = model.fit(X_train, Y_train, epochs=50, batch_size=128, validation_data=(X_val, Y_val))
+history = model.fit(X_train, Y_train, epochs=500, batch_size=128, validation_data=(X_val, Y_val))
 print(history.history)
 
 
@@ -85,7 +94,7 @@ print(history.history)
 # evaluation
 # model.evaluate(X_train, Y_train)
 print("========================================================")
-results = model.evaluate(X_train, Y_train)
-print("test loss, test acc:", results)
+results = model.evaluate(X_val, Y_val)
+print(results)
 # weight, Bias
 # print(model.layers[0].get_weights())
