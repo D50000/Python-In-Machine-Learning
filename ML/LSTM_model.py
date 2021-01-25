@@ -84,10 +84,8 @@ X_train, Y_train, X_val, Y_val = splitData(X_train, Y_train, 0.1)
 # Y_val = Y_val[:,np.newaxis]
 
 model = buildManyToOneModel(X_train.shape)
-# callback = EarlyStopping(monitor="loss", patience=10, verbose=1, mode="auto")
-# history = model.fit(X_train, Y_train, epochs=1000, batch_size=128, validation_data=(X_val, Y_val), callbacks=[callback])
-history = model.fit(X_train, Y_train, epochs=500, batch_size=128, validation_data=(X_val, Y_val))
-print(history.history)
+callback = EarlyStopping(monitor="loss", patience=10, verbose=1, mode="auto")
+train_history = model.fit(X_train, Y_train, epochs=1000, batch_size=128, validation_split=0.1, callbacks=[callback])
 
 
 
@@ -98,3 +96,11 @@ results = model.evaluate(X_val, Y_val)
 print(results)
 # weight, Bias
 # print(model.layers[0].get_weights())
+
+plt.plot(train_history.history['loss'])  
+plt.plot(train_history.history['val_loss'])  
+plt.title('Train History')  
+plt.ylabel('loss')  
+plt.xlabel('Epoch')  
+plt.legend(['loss', 'val_loss'], loc='upper left')  
+plt.show() 
