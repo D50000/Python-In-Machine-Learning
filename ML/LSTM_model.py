@@ -3,7 +3,6 @@
 
 # ============================================================
 # Copyright 2021, Eddie Hsu (D50000)
-# https://medium.com/@daniel820710/%E5%88%A9%E7%94%A8keras%E5%BB%BA%E6%A7%8Blstm%E6%A8%A1%E5%9E%8B-%E4%BB%A5stock-prediction-%E7%82%BA%E4%BE%8B-1-67456e0a0b
 # Released MySelf
 # ============================================================
 
@@ -26,7 +25,6 @@ def normalize(train):
 	train = train.drop(["date"], axis=1)
 	train = train.drop(["timestamp"], axis=1)
 	train = train.drop(["price_change"], axis=1)
-	train = train.drop(["price_LS"], axis=1)
 	train_norm = train.apply(lambda x: (x - np.mean(x)) / (np.max(x) - np.min(x)))
 	return train_norm
 
@@ -34,7 +32,7 @@ def buildTrain(train, pastDay=30, futureDay=5):
 	X_train, Y_train = [], []
 	for i in range(train.shape[0]+1-futureDay-pastDay):
 		X_train.append(np.array(train.iloc[i:i+pastDay]))
-		Y_train.append(np.array(train.iloc[i+pastDay:i+pastDay+futureDay]["Close"]))
+		Y_train.append(np.array(train.iloc[i+pastDay:i+pastDay+futureDay]["price_LS"]))
 	return np.array(X_train), np.array(Y_train)
 
 def shuffle(X, Y):
@@ -61,7 +59,6 @@ def buildOneToOneModel(shape):
 
 def buildManyToOneModel(shape):
     model = Sequential()
-    # input data shape: (batch_size, timesteps, data_dim)
     model.add(LSTM(10, input_length=shape[1], input_dim=shape[2]))
     # output shape: (1, 1)
     model.add(Dense(1))
@@ -76,24 +73,29 @@ data = readTrain()
 train_norm = normalize(data)
 print (train_norm)
 # build Data, use last 1 days to predict next 1 days
-X_train, Y_train = buildTrain(train_norm, 30, 1)
+X_train, Y_train = buildTrain(train_norm, 12, 1)
 # shuffle the data, and random seed is 10
 # X_train, Y_train = shuffle(X_train, Y_train)
 # split training data and validation data
-X_train, Y_train, X_test, Y_test = splitData(X_train, Y_train, 0.1)
-print(X_train.shape)
-# X_train = X_train.reshape((X_train.shape[0], X_train.shape[2], X_train.shape[1]))
-# print(X_train.shape)
+X_train, Y_train, X_val, Y_val = splitData(X_train, Y_train, 0.1)
+
+# from 2 dimmension to 3 dimension
+# Y_train = Y_train[:,np.newaxis]
+# Y_val = Y_val[:,np.newaxis]
+
 model = buildManyToOneModel(X_train.shape)
 callback = EarlyStopping(monitor="loss", patience=10, verbose=1, mode="auto")
-train_history = model.fit(X_train, Y_train, epochs=500, batch_size=128, validation_split=0.1, callbacks=[callback])
+train_history = model.fit(X_train, Y_train, epochs=1000, batch_size=128, validation_split=0.1, callbacks=[callback])
 
 
 
 # evaluation
+# model.evaluate(X_train, Y_train)
 print("========================================================")
-results = model.evaluate(X_test, Y_test)
+results = model.evaluate(X_val, Y_val)
 print(results)
+# weight, Bias
+# print(model.layers[0].get_weights())
 
 plt.plot(train_history.history['loss'])  
 plt.plot(train_history.history['val_loss'])  
