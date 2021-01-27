@@ -24,7 +24,6 @@ def normalize(train):
 	train = train.drop(["index"], axis=1)
 	train = train.drop(["date"], axis=1)
 	train = train.drop(["timestamp"], axis=1)
-	train = train.drop(["price_change"], axis=1)
 	train_norm = train.apply(lambda x: (x - np.mean(x)) / (np.max(x) - np.min(x)))
 	return train_norm
 
@@ -32,7 +31,7 @@ def buildTrain(train, pastDay=30, futureDay=5):
 	X_train, Y_train = [], []
 	for i in range(train.shape[0]+1-futureDay-pastDay):
 		X_train.append(np.array(train.iloc[i:i+pastDay]))
-		Y_train.append(np.array(train.iloc[i+pastDay:i+pastDay+futureDay]["price_LS"]))
+		Y_train.append(np.array(train.iloc[i+pastDay:i+pastDay+futureDay]["Close"]))
 	return np.array(X_train), np.array(Y_train)
 
 def shuffle(X, Y):
@@ -72,30 +71,20 @@ def buildManyToOneModel(shape):
 data = readTrain()
 train_norm = normalize(data)
 print (train_norm)
-# build Data, use last 1 days to predict next 1 days
-X_train, Y_train = buildTrain(train_norm, 12, 1)
-# shuffle the data, and random seed is 10
-# X_train, Y_train = shuffle(X_train, Y_train)
+# build Data, use last 36 days to predict next 1 days
+X_train, Y_train = buildTrain(train_norm, 36, 1)
 # split training data and validation data
-X_train, Y_train, X_val, Y_val = splitData(X_train, Y_train, 0.1)
-
-# from 2 dimmension to 3 dimension
-# Y_train = Y_train[:,np.newaxis]
-# Y_val = Y_val[:,np.newaxis]
+X_train, Y_train, X_test, Y_test = splitData(X_train, Y_train, 0.1)
 
 model = buildManyToOneModel(X_train.shape)
 callback = EarlyStopping(monitor="loss", patience=10, verbose=1, mode="auto")
-train_history = model.fit(X_train, Y_train, epochs=1000, batch_size=128, validation_split=0.1, callbacks=[callback])
-
+train_history = model.fit(X_train, Y_train, epochs=500, batch_size=128, validation_split=0.1, callbacks=[callback])
 
 
 # evaluation
-# model.evaluate(X_train, Y_train)
 print("========================================================")
-results = model.evaluate(X_val, Y_val)
+results = model.evaluate(X_test, Y_test)
 print(results)
-# weight, Bias
-# print(model.layers[0].get_weights())
 
 plt.plot(train_history.history['loss'])  
 plt.plot(train_history.history['val_loss'])  
@@ -103,4 +92,7 @@ plt.title('Train History')
 plt.ylabel('loss')  
 plt.xlabel('Epoch')  
 plt.legend(['loss', 'val_loss'], loc='upper left')  
-plt.show() 
+plt.show()
+
+
+# save the train model
