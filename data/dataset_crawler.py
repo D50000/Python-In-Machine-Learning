@@ -65,6 +65,7 @@ for period in range(120):
     for i, c in enumerate(raw_Data):
         start_timestamp = str(c[0])
         if i == 0:
+
             previous_start_timestamp = start_timestamp
         if i == len(raw_Data)-1:
             # print('Last data: ' + str(c))
@@ -107,8 +108,8 @@ df = pd.DataFrame(data=df_numpy)
 
 
 # price.pct_change().head()
-df['price_change'] = df['Close'].pct_change().shift(-1)       # predict change %
-df['price_LS'] = np.sign(df['price_change'])  # predict Long/Short
-df=df.dropna()
+# df['price_change'] = df['Close'].pct_change().shift(-1)       # predict change %
+# df['price_LS'] = np.sign(df['price_change'])  # predict Long/Short
+# df=df.dropna()
 print (df)
 df.to_csv("eth_5m.csv", index_label="index")
