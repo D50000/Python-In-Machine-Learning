@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 #plt.show() # 有了%matplotlib inline 就可以省掉plt.show()了
 
 def readTrain():
-	train = pd.read_csv("../data/eth_5m.csv")
+	train = pd.read_csv("../data/eth_30m.csv")
 	return train
 
 def normalize(train):
@@ -34,9 +34,9 @@ def normalize(train):
 
 def buildTrain(train, data_Y, pastDay=30, futureDay=5):
 	X_train, Y_train = [], []
-	for i in range(train.shape[0]+1-futureDay-pastDay):
+	for i in range(train.shape[0]-futureDay-pastDay):
 		X_train.append(np.array(train.iloc[i:i+pastDay]))
-		Y_train.append(np.array(train.iloc[i+pastDay:i+pastDay+futureDay]['Close']))
+		Y_train.append(np.array(train.iloc[i+pastDay+1:i+pastDay+futureDay+1]['Close']))
 	return np.array(X_train), np.array(Y_train)
 
 def shuffle(X, Y):
