@@ -20,7 +20,7 @@ import talib
 r1 = requests.get('https://fapi.binance.com/fapi/v1/time').json()
 period = 86400 * 360 * 1000  # ms
 startTime = r1['serverTime'] - period
-interval = '5m'
+interval = '30m'
 raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&limit=1500&interval=' + interval).json()
 
 
@@ -56,7 +56,7 @@ Taker_Total_Array = []
 
 previous_start_timestamp = 0
 previous_end_timestamp = 0
-for period in range(120):
+for period in range(16):
     """
     print(previous_start_timestamp)
     print('    VVVVV')
@@ -86,7 +86,7 @@ for period in range(120):
         Taker_Volume_Array.insert(i, float(c[9]))
         Taker_Total_Array.insert(i, float(c[10]))
         new_start_timestamp = int(previous_start_timestamp) - (int(previous_end_timestamp) - int(previous_start_timestamp))
-        new_end_timestamp = int(previous_start_timestamp) - 300000
+        new_end_timestamp = int(previous_start_timestamp) - 1800000
     raw_Data = requests.get('https://fapi.binance.com/fapi/v1/klines?symbol=ETHUSDT&interval=' + interval + '&startTime=' + str(new_start_timestamp) + '&endTime=' + str(new_end_timestamp)).json()
 
 df_numpy = {
@@ -112,4 +112,4 @@ df = pd.DataFrame(data=df_numpy)
 # df['price_LS'] = np.sign(df['price_change'])  # predict Long/Short
 # df=df.dropna()
 print (df)
-df.to_csv("eth_5m.csv", index_label="index")
+df.to_csv("eth_30m.csv", index_label="index")
